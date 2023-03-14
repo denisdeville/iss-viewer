@@ -1,7 +1,7 @@
 .idea
 
-backend/code-with-quarkus/.idea
+*/.idea
 
-backend/code-with-quarkus/.mvn
+*/.mvn
 
-backend/code-with-quarkus/target/*
+*/target/*
