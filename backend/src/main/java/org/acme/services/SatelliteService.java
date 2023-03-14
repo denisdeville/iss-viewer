@@ -8,7 +8,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.acme.models.SatelliteModel;
+import org.acme.models.dto.SatelliteModel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -4,7 +4,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-import org.acme.models.SatelliteModel;
+import org.acme.models.dto.SatelliteModel;
 import org.acme.services.SatelliteService;
 
 import javax.inject.Inject;

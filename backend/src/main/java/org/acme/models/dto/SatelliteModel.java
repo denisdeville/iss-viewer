@@ -1,4 +1,4 @@
-package org.acme.models;
+package org.acme.models.dto;
 
 public class SatelliteModel {
 
