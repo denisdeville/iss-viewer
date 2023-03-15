@@ -11,14 +11,14 @@
     const { data: satelliteInfos, pending, refresh } = await useFetch('https://api.wheretheiss.at/v1/satellites/25544');
     
 
-    // function refreshMap() {
-    //   setTimeout(() => {
-    //     refresh();
-    //     refreshMap();
-    //   }, 2000)
-    // }
+    function refreshMap() {
+      setTimeout(() => {
+        refresh();
+        refreshMap();
+      }, 2000)
+    }
 
-    // refreshMap();
+    refreshMap();
 
 
 </script>
@@ -55,5 +55,5 @@
   </template>
 
 <style scoped>
-@import 'vue3-openlayers/dist/vue3-openlayers.css';
+  @import 'vue3-openlayers/dist/vue3-openlayers.css';
 </style>
