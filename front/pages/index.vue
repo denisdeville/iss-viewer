@@ -8,9 +8,6 @@
   </header>
     <div>
       <h1>Welcome to the homepage</h1>
-      <AppAlert>
-        This is an auto-imported component
-      </AppAlert>
 
       <div>
         <img style="width: 200px;" src="/img/iss.jpg" alt="ISS LOGO" />
