@@ -6,7 +6,7 @@
     const zoom = 0
     const rotation = 0
 
-    const { data: satelliteInfos, pending, refresh } = await useFetch('http://localhost:8080/iss/position/mock/10', {pick: ['latitude', 'longitude']});
+    const { data: satelliteInfos, pending, refresh } = await useFetch('http://localhost:8080/iss/position/25544', {pick: ['latitude', 'longitude']});
 
     function refreshMap() {
       setTimeout(() => {

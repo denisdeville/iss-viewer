@@ -5,6 +5,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -15,9 +17,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ApplicationScoped
 public class SatelliteService {
     
-    public SatelliteModel GetSatelliteById(long id)
+    private final String whereTheIssAtBaseUrl =  "https://api.wheretheiss.at/v1/satellites/";
+
+    public SatelliteModel GetSatelliteInformationById(long id)
     {
-        String url = "https://api.wheretheiss.at/v1/satellites/" + id;
+        String url =  whereTheIssAtBaseUrl + id;
 
         try {
             HttpClient client = HttpClient.newHttpClient();
@@ -37,8 +41,35 @@ public class SatelliteService {
        
         return new SatelliteModel();
     }
+    
+    public List<SatelliteModel> GetSatelliteSunExposionById(long id, String timestamps)
+    {
 
-    public SatelliteModel GetMock(long id)
+        String url = whereTheIssAtBaseUrl + id + "/positions?timestamps=" + timestamps;
+
+
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+              .uri(URI.create(url))
+              .build();
+     
+            HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+
+            String responseAsString = response.body();
+            
+            ObjectMapper mapper = new ObjectMapper();
+
+            return mapper.readValue(responseAsString, mapper.getTypeFactory().constructCollectionType(List.class, SatelliteModel.class));
+
+        } catch(Exception e) {
+            System.out.print("exception" + e);
+        }
+       
+        return new ArrayList<>();
+    }
+
+    public SatelliteModel GetSatelliteInformationByIdMock(long id)
     {
 
         double randomLatitude = Math.random() * 120;
