@@ -9,15 +9,21 @@ import org.acme.services.SatelliteService;
 
 import javax.inject.Inject;
 
-@Path("/satellites")
+@Path("/iss")
 public class SatellitesResource {
 
     @Inject
     SatelliteService satelliteService;
 
     @GET
-    @Path("/{id}")
+    @Path("/position/{id}")
     public SatelliteModel GetSatellitePosition(@PathParam("id") long id) {
         return satelliteService.GetSatelliteById(id);
+    }
+    
+    @GET
+    @Path("/position/mock/{id}")
+    public SatelliteModel GetMock(@PathParam("id") long id) {
+        return satelliteService.GetMock(id);
     }
 }

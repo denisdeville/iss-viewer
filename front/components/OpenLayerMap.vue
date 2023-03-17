@@ -1,15 +1,12 @@
 <script setup>
-    const center = [40, 40]
-    const projection = 'EPSG:4326'
-    const zoom = 1
+    import markerIcon from '/img/iss_marker.png'
+
+    let center = ref(useCenter());
+    const projection = useProjection()
+    const zoom = 0
     const rotation = 0
-    const radius = 40
-    const strokeWidth = 10
-    const strokeColor = 'red'
-    const fillColor = 'white'
-    
-    const { data: satelliteInfos, pending, refresh } = await useFetch('https://api.wheretheiss.at/v1/satellites/25544');
-    
+
+    const { data: satelliteInfos, pending, refresh } = await useFetch('http://localhost:8080/iss/position/mock/10', {pick: ['latitude', 'longitude']});
 
     function refreshMap() {
       setTimeout(() => {
@@ -19,17 +16,12 @@
     }
 
     refreshMap();
-
-
 </script>
 
 <template>
-  <button @click="updateMap">Refresh</button>
-  <!-- Longitude: {{ satelliteInfos.longitude }}
-  Latitude: {{ satelliteInfos.latitude }} -->
-  <ol-map :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true" style="height:600px">
+  <ol-map :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true" style="height:100vh">
   
-      <ol-view ref="view" :center="center" :rotation="rotation" :zoom="zoom" :projection="projection" />
+      <ol-view :center="center" :rotation="rotation" :zoom="zoom" :projection="projection" />
   
       <ol-tile-layer>
           <ol-source-osm />
@@ -38,12 +30,9 @@
       <ol-vector-layer>
           <ol-source-vector>
               <ol-feature>
-                  <ol-geom-point v-if="satelliteInfos != null && satelliteInfos.longitude != null && satelliteInfos.latitude != null" :coordinates="[satelliteInfos.longitude, satelliteInfos.latitude]"></ol-geom-point>
+                  <ol-geom-point v-if="satelliteInfos != null" :coordinates="[satelliteInfos.longitude, satelliteInfos.latitude]"></ol-geom-point>
                   <ol-style>
-                      <ol-style-circle :radius="radius">
-                          <ol-style-fill :color="fillColor"></ol-style-fill>
-                          <ol-style-stroke :color="strokeColor" :width="strokeWidth"></ol-style-stroke>
-                      </ol-style-circle>
+                    <ol-style-icon :src="markerIcon" :scale="0.1"></ol-style-icon>
                   </ol-style>
               </ol-feature>
   

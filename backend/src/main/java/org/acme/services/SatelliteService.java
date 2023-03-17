@@ -37,4 +37,17 @@ public class SatelliteService {
        
         return new SatelliteModel();
     }
+
+    public SatelliteModel GetMock(long id)
+    {
+
+        double randomLatitude = Math.random() * 120;
+        double randomLongitude = Math.random() * 60;
+
+        SatelliteModel satelliteModel = new SatelliteModel();
+        satelliteModel.setLatitude(randomLatitude);
+        satelliteModel.setLongitude(randomLongitude);
+
+        return satelliteModel;
+    }
 }
