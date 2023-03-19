@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { MapComponent } from './components/map/map.component';
 import { MapService } from './services/map.service';
 import { SunExpositionComponent } from './components/sun-exposition/sun-exposition.component';
+import {TableModule} from 'primeng/table';
+import {ButtonModule} from 'primeng/button';
+import {CheckboxModule} from 'primeng/checkbox';
 
 @NgModule({
   declarations: [
@@ -16,7 +19,10 @@ import { SunExpositionComponent } from './components/sun-exposition/sun-expositi
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    TableModule,
+    ButtonModule,
+    CheckboxModule
   ],
   providers: [MapService],
   bootstrap: [AppComponent]

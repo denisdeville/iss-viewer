@@ -11,4 +11,14 @@ export class OlUtils {
             }),
         })
     }
+
+    public static getSunIconStyle(): Style {
+        return new Style({
+            image: new Icon({
+              anchor: [0.5, 0.5],
+              scale: 0.1,
+              src: 'assets/iss_marker_sun.png',
+            }),
+        })
+    }
 }

@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import TileLayer from 'ol/layer/Tile';
-import Map from 'ol/Map.js';
+import Map from 'ol/Map.js' ;
 import OSM from 'ol/source/OSM';
 import View from 'ol/View';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import { OlUtils } from '../utils/ol-utils';
+import { SatelliteInfos } from '../models/satellite-infos';
 
 
 @Injectable({
@@ -20,9 +21,15 @@ export class MapService {
     private point: Point = new Point([0, 0]);
     private pointFeature = new Feature();
     private iconStyle = OlUtils.getDefaultIconStyle();
+    private sunIconStyle = OlUtils.getSunIconStyle();
 
     private _vectorSource!: VectorSource;
     private _vectorLayer = new VectorLayer();
+
+    private _sunExpositionSource!: VectorSource;
+    private _sunExpositionVectorLayer = new VectorLayer();
+
+    private _sunExpositionToFeatureMap: any = {};
 
     constructor() { }
 
@@ -40,13 +47,19 @@ export class MapService {
           source: this._vectorSource,
         });
 
+        this._sunExpositionSource = new VectorSource({});
+        this._sunExpositionVectorLayer = new VectorLayer({
+          source: this._sunExpositionSource,
+        });
+
         this._map = new Map({
             target: 'map',
             layers: [
               new TileLayer({
                 source: new OSM(),
               }), 
-              this._vectorLayer
+              this._vectorLayer,
+              this._sunExpositionVectorLayer
             ],
             view: new View({
               center: [0, 0],
@@ -63,6 +76,34 @@ export class MapService {
         if (this.pointFeature.getGeometry() == null) {
             this.pointFeature.setGeometry(this.point);
         }
+    }
+
+    public highlightSunExposition(sunExpositions: SatelliteInfos[]): void {
+      for(let sunExposition of sunExpositions) {
+        let feature = new Feature();
+        feature.setStyle(this.sunIconStyle);
+  
+        feature.setGeometry(new Point([sunExposition.longitude, sunExposition.latitude]));
+  
+        this._sunExpositionToFeatureMap[sunExposition.timestamp] = feature;
+  
+        this._sunExpositionSource.addFeature(feature);
+      }
+    }
+
+    public removeSunExpositionHighlight(sunExposions: SatelliteInfos[]) {
+      for(let sunExposition of sunExposions) {
+        let feature = this._sunExpositionToFeatureMap[sunExposition.timestamp];
+        if (feature){
+          this._sunExpositionSource.removeFeature(feature);
+        }
+      }
+
+      
+    }
+
+    public clearSunExpositionHighlight(): void {
+      this._sunExpositionSource.clear();
     }
 
     public get map(): Map {
