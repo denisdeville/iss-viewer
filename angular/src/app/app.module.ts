@@ -3,9 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MapComponent } from './map/map.component';
+import { MapComponent } from './components/map/map.component';
 import { MapService } from './services/map.service';
-import { SunExpositionComponent } from './sun-exposition/sun-exposition.component';
+import { SunExpositionComponent } from './components/sun-exposition/sun-exposition.component';
 
 @NgModule({
   declarations: [

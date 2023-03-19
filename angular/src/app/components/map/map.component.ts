@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import Map from 'ol/Map.js';
-import { SatelliteInfos } from '../models/satellite-infos';
-import { SatellitePositionService } from '../services/satellite-position.service';
+import { SatelliteInfos } from '../../models/satellite-infos';
+import { SatellitePositionService } from '../../services/satellite-position.service';
 import { interval, Observable, ReplaySubject, switchMap, takeUntil } from 'rxjs';
-import { MapService } from '../services/map.service';
+import { MapService } from '../../services/map.service';
 
 
 @Component({
