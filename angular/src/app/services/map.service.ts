@@ -91,6 +91,11 @@ export class MapService {
       }
     }
 
+    public zoomToCoordinates(coordinates: number[]) {
+      this.map.getView().setCenter(coordinates);
+      this.map.getView().setZoom(6);
+    }
+
     public removeSunExpositionHighlight(sunExposions: SatelliteInfos[]) {
       for(let sunExposition of sunExposions) {
         let feature = this._sunExpositionToFeatureMap[sunExposition.timestamp];

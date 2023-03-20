@@ -15,6 +15,7 @@
                 <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
             <th>Date</th>
+            <th>Actions</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-expo>
@@ -23,6 +24,7 @@
                 <p-tableCheckbox [value]="expo"></p-tableCheckbox>
             </td>
             <td>{{expo.timestamp * 1000 | date: 'medium' }}</td>
+            <td><span (click)="zoomToExpo(expo)" class="clickable pi pi-search"></span></td>
         </tr>
     </ng-template>
 </p-table>

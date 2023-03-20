@@ -6,8 +6,8 @@ export class OlUtils {
         return new Style({
             image: new Icon({
               anchor: [0.5, 0.5],
-              scale: 0.1,
-              src: 'assets/iss_marker.png',
+              scale: 0.5,
+              src: 'assets/iss.png',
             }),
         })
     }

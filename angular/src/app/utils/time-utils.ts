@@ -1,18 +1,7 @@
 export class TimeUtils {
-
-    private static initTime: Date;
-
-    private static currentTimeInMs: number;
+    private static currentTimeInMs = (new Date()).getTime();
 
     private static intervalInSeconds = 10;
-
-    public static getInitTime(): number {
-        if (this.initTime == null) {
-            this.initTime = new Date();
-            this.currentTimeInMs = (new Date()).getTime();
-        }
-        return this.initTime.getTime();
-    }
 
     public static getNextTimestamps(howMany: number) {
         const nextTimestamps = [];

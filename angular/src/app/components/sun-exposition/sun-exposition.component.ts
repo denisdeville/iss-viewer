@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import Point from 'ol/geom/Point';
 import { SatelliteInfos } from 'src/app/models/satellite-infos';
 import { SunExpositionService } from 'src/app/services/sun-exposition.service';
 import { TimeUtils } from 'src/app/utils/time-utils';
@@ -12,8 +13,6 @@ import { MapService } from '../../services/map.service';
 export class SunExpositionComponent {
 
   loading = false;
-
-  nowTime = TimeUtils.getInitTime();
 
   private _expositions: SatelliteInfos[] = [];
 
@@ -43,6 +42,10 @@ export class SunExpositionComponent {
         this.loading = false;
         this.expositions = this.expositions.concat(res);
       });
+  }
+
+  zoomToExpo(sunExposition: SatelliteInfos) {
+    this.mapService.zoomToCoordinates([sunExposition.longitude, sunExposition.latitude]);
   }
 
   next() {
