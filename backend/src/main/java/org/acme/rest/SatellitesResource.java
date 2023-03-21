@@ -4,7 +4,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import org.acme.exceptions.CustomException;
+import org.acme.models.dto.CustomExceptionDTO;
 import org.acme.models.dto.SatelliteModel;
 import org.acme.services.SatelliteService;
 
@@ -20,19 +24,24 @@ public class SatellitesResource {
 
     @GET
     @Path("/position/{id}")
-    public SatelliteModel GetSatellitePosition(@PathParam("id") long id) {
-        return satelliteService.GetSatelliteInformationById(id);
+    public Response GetSatellitePosition(@PathParam("id") long id) {
+        try {
+            SatelliteModel model = satelliteService.GetSatelliteInformationById(id);
+            return Response.ok().entity(model).build();
+        } catch(CustomException exception) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                  .type(MediaType.APPLICATION_JSON)
+                  .entity(new CustomExceptionDTO(exception))
+                  .build();
+        }
+        
     }
 
     @GET
     @Path("/sun/{id}")
-    public List<SatelliteModel> GetSatelliteSunExposion(@PathParam("id") long id, @QueryParam("timestamps") String timestamps) {
-        return satelliteService.GetSatelliteSunExposionById(id, timestamps);
+    public Response GetSatelliteSunExposion(@PathParam("id") long id, @QueryParam("timestamps") String timestamps) throws CustomException {
+        List<SatelliteModel> model = satelliteService.GetSatelliteSunExposionById(id, timestamps);
+        return Response.ok().entity(model).build();
     }
-    
-    @GET
-    @Path("/position/mock/{id}")
-    public SatelliteModel GetMock(@PathParam("id") long id) {
-        return satelliteService.GetSatelliteInformationByIdMock(id);
-    }
+
 }

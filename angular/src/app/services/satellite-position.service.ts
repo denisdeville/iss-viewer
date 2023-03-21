@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import { SatelliteInfos } from '../models/satellite-infos';
 
 @Injectable({
@@ -13,6 +13,6 @@ export class SatellitePositionService {
   constructor(private httpClient: HttpClient) { }
 
   public getSatelliteInfos(id: number): Observable<SatelliteInfos> {
-    return this.httpClient.get<SatelliteInfos>(`${this.baseUrl}/${id}`);
+    return this.httpClient.get<SatelliteInfos>(`${this.baseUrl}/${id}`)
   }
 }

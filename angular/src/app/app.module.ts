@@ -9,12 +9,20 @@ import { SunExpositionComponent } from './components/sun-exposition/sun-expositi
 import {TableModule} from 'primeng/table';
 import {ButtonModule} from 'primeng/button';
 import {CheckboxModule} from 'primeng/checkbox';
+import {ToastModule} from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MessagePopupComponent } from './components/message-popup/message-popup.component';
+import { CustomMessagesService } from './services/custom-messages.service';
+
+
 
 @NgModule({
   declarations: [
     AppComponent,
     MapComponent,
-    SunExpositionComponent
+    SunExpositionComponent,
+    MessagePopupComponent
   ],
   imports: [
     BrowserModule,
@@ -22,9 +30,11 @@ import {CheckboxModule} from 'primeng/checkbox';
     HttpClientModule,
     TableModule,
     ButtonModule,
-    CheckboxModule
+    CheckboxModule,
+    ToastModule,
+    BrowserAnimationsModule
   ],
-  providers: [MapService],
+  providers: [MapService, MessageService, CustomMessagesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
