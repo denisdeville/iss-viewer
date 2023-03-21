@@ -9,6 +9,9 @@ import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import { OlUtils } from '../utils/ol-utils';
 import { SatelliteInfos } from '../models/satellite-infos';
+import Draw from 'ol/interaction/Draw.js';
+import {defaults} from 'ol/interaction/defaults';
+import { Observable, Subject } from 'rxjs';
 
 
 @Injectable({
@@ -29,7 +32,15 @@ export class MapService {
     private _sunExpositionSource!: VectorSource;
     private _sunExpositionVectorLayer = new VectorLayer();
 
+    private _drawSource!: VectorSource;
+    private _drawVectorLayer = new VectorLayer();
+
     private _sunExpositionToFeatureMap: any = {};
+
+    private _draw!: Draw;
+
+    private drawEndSubject = new Subject<Feature>();
+    public onDrawEnd$: Observable<Feature> = this.drawEndSubject.asObservable();
 
     constructor() { }
 
@@ -52,12 +63,18 @@ export class MapService {
           source: this._sunExpositionSource,
         });
 
+        this._drawSource = new VectorSource({});
+        this._drawVectorLayer = new VectorLayer({
+          source: this._drawSource,
+        });
+
         this._map = new Map({
             target: 'map',
             layers: [
               new TileLayer({
                 source: new OSM(),
               }), 
+              this._drawVectorLayer,
               this._vectorLayer,
               this._sunExpositionVectorLayer
             ],
@@ -66,7 +83,8 @@ export class MapService {
               zoom: 2,
               projection: 'EPSG:4326'
             }),
-            controls: []
+            controls: [],
+            interactions: defaults({ doubleClickZoom: false }),
           });
           this._initialized = true;
     }
@@ -103,8 +121,6 @@ export class MapService {
           this._sunExpositionSource.removeFeature(feature);
         }
       }
-
-      
     }
 
     public clearSunExpositionHighlight(): void {
@@ -113,5 +129,25 @@ export class MapService {
 
     public get map(): Map {
         return this._map;
+    }
+
+    public activateDraw() {
+      this._draw = new Draw({
+        source: this._drawSource,
+        type: 'Polygon',
+      });
+      this._map.addInteraction(this._draw);
+
+      this._draw.on('drawend', (event) => {
+        this.drawEndSubject.next(event.feature);
+      })
+    }
+
+    public deactivateDraw() {
+      this._map.removeInteraction(this._draw);
+    }
+
+    public deleteDrawnFeature(feature: Feature) {
+      this._drawSource.removeFeature(feature);
     }
 }

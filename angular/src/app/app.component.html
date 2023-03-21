@@ -4,7 +4,15 @@
         <app-map></app-map>
     </div>
     <div class="col-3">
-        <app-sun-exposition></app-sun-exposition>
+        <p-tabView>
+            <p-tabPanel header="Sun expositions">
+                <app-sun-exposition></app-sun-exposition>
+            </p-tabPanel>
+            <p-tabPanel header="Draw">
+                <app-draw></app-draw>
+            </p-tabPanel>
+        </p-tabView>
+        
     </div>
 </div>
 <router-outlet></router-outlet>

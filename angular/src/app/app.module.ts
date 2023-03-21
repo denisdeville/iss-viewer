@@ -14,6 +14,11 @@ import { MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MessagePopupComponent } from './components/message-popup/message-popup.component';
 import { CustomMessagesService } from './services/custom-messages.service';
+import {TabViewModule} from 'primeng/tabview';
+import { DrawComponent } from './components/draw/draw.component';
+import {DialogModule} from 'primeng/dialog';
+import {InputTextModule} from 'primeng/inputtext';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -22,7 +27,8 @@ import { CustomMessagesService } from './services/custom-messages.service';
     AppComponent,
     MapComponent,
     SunExpositionComponent,
-    MessagePopupComponent
+    MessagePopupComponent,
+    DrawComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +38,11 @@ import { CustomMessagesService } from './services/custom-messages.service';
     ButtonModule,
     CheckboxModule,
     ToastModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    TabViewModule,
+    DialogModule,
+    InputTextModule,
+    FormsModule
   ],
   providers: [MapService, MessageService, CustomMessagesService],
   bootstrap: [AppComponent]
