@@ -1,1 +1,15 @@
-<p-toast></p-toast>
+<p-toast>
+    <ng-template let-message pTemplate="message">
+        <div class="flex flex-column" style="flex: 1">
+            <div class="text-center">
+                <h4>{{message.summary}}</h4>
+                <p>{{message.detail}}</p>
+            </div>
+            <div class="grid p-fluid" *ngIf="message.severity == 'success'" >
+                <div class="col-6">
+                    <button type="button" (click)="check(message)" pButton label="Check" class="p-button-success"></button>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-toast>

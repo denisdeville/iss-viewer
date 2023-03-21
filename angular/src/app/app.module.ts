@@ -19,6 +19,7 @@ import { DrawComponent } from './components/draw/draw.component';
 import {DialogModule} from 'primeng/dialog';
 import {InputTextModule} from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
+import { DrawnFeaturesService } from './services/drawn-features.service';
 
 
 
@@ -44,7 +45,7 @@ import { FormsModule } from '@angular/forms';
     InputTextModule,
     FormsModule
   ],
-  providers: [MapService, MessageService, CustomMessagesService],
+  providers: [MapService, MessageService, CustomMessagesService, DrawnFeaturesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

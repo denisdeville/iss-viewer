@@ -12,6 +12,7 @@ import { SatelliteInfos } from '../models/satellite-infos';
 import Draw from 'ol/interaction/Draw.js';
 import {defaults} from 'ol/interaction/defaults';
 import { Observable, Subject } from 'rxjs';
+import { DrawnFeaturesService } from './drawn-features.service';
 
 
 @Injectable({
@@ -42,7 +43,7 @@ export class MapService {
     private drawEndSubject = new Subject<Feature>();
     public onDrawEnd$: Observable<Feature> = this.drawEndSubject.asObservable();
 
-    constructor() { }
+    constructor(private drawnFeatureService: DrawnFeaturesService) { }
 
     public initialize(): void {
         if (this._initialized) {
@@ -75,8 +76,8 @@ export class MapService {
                 source: new OSM(),
               }), 
               this._drawVectorLayer,
+              this._sunExpositionVectorLayer,
               this._vectorLayer,
-              this._sunExpositionVectorLayer
             ],
             view: new View({
               center: [0, 0],
@@ -89,11 +90,12 @@ export class MapService {
           this._initialized = true;
     }
 
-    public highlightPoint(coordinates: number[]): void {
+    public updateSatelliteCoordinates(coordinates: number[]): void {
         this.point.setCoordinates(coordinates);
         if (this.pointFeature.getGeometry() == null) {
             this.pointFeature.setGeometry(this.point);
         }
+        this.drawnFeatureService.checkIntersections(this.point);
     }
 
     public highlightSunExposition(sunExpositions: SatelliteInfos[]): void {
@@ -112,6 +114,13 @@ export class MapService {
     public zoomToCoordinates(coordinates: number[]) {
       this.map.getView().setCenter(coordinates);
       this.map.getView().setZoom(6);
+    }
+
+    public zoomTofeature(feature: Feature) {
+      const extent = feature.getGeometry()?.getExtent();
+      if (extent) {
+        this.map.getView().fit(extent);
+      }
     }
 
     public removeSunExpositionHighlight(sunExposions: SatelliteInfos[]) {

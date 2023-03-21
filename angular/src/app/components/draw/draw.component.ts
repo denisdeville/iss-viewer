@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import Feature from 'ol/Feature';
+import { DrawnFeaturesService } from 'src/app/services/drawn-features.service';
 import { MapService } from 'src/app/services/map.service';
-import { DrawnFeature } from './drawn-feature';
+import { AlertFeature } from './drawn-feature';
 
 @Component({
   selector: 'app-draw',
@@ -10,15 +11,13 @@ import { DrawnFeature } from './drawn-feature';
 })
 export class DrawComponent {
 
-  public features: DrawnFeature[] = [];
-
   displayModal: boolean = false;
 
-  currentFeatureName!: string | null;
+  currentAlertName!: string | null;
 
   private currentFeature!: Feature;
 
-  constructor(private mapService: MapService) { }
+  constructor(private mapService: MapService, public drawnFeaturesService: DrawnFeaturesService) { }
 
   ngOnInit() {
     this.mapService.onDrawEnd$.subscribe(feature => {
@@ -32,24 +31,25 @@ export class DrawComponent {
     this.displayModal = true;
   }
 
-  public newDraw() {
+  public newAlert() {
     this.mapService.activateDraw();
   }
 
-  public deleteFeature(drawnFeature: DrawnFeature) {
+  public deleteAlert(drawnFeature: AlertFeature) {
     this.mapService.deleteDrawnFeature(drawnFeature.feature);
-    const index = this.features.indexOf(drawnFeature, 0);
-    if (index > -1) {
-      this.features.splice(index, 1);
-    }
+    this.drawnFeaturesService.removeFeature(drawnFeature);
+  }
+  
+  public zoomToAlert(drawnFeature: AlertFeature) {
+    this.mapService.zoomTofeature(drawnFeature.feature);
   }
 
-  validateDrawing() {
-    this.features.push(new DrawnFeature(this.currentFeatureName ?? (new Date()).getTime().toString(), this.currentFeature));
+  validateAlert() {
+    this.drawnFeaturesService.addFeature(new AlertFeature(this.currentAlertName ?? (new Date()).getTime().toString(), this.currentFeature));
     this.closeModal(false);
   }
 
-  cancelDrawing() {
+  cancelAlert() {
     this.closeModal(true);
   }
 
@@ -58,7 +58,7 @@ export class DrawComponent {
       this.mapService.deleteDrawnFeature(this.currentFeature);
     }
     this.displayModal = false;
-    this.currentFeatureName = null;
+    this.currentAlertName = null;
     this.currentFeature = null as any;
   }
 }

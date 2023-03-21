@@ -1,28 +1,31 @@
-<button pButton (click)="newDraw()" type="button" label="New draw"></button>
+<button pButton (click)="newAlert()" type="button" label="New alert"></button>
 
-<p-table [value]="features" 
+<p-table [value]="drawnFeaturesService.features" 
     scrollHeight="75vh">
     <ng-template pTemplate="header">
         <tr>
-            <th [style]="{'width': '80%'}">Drawing</th>
-            <th>Actions</th>
+            <th [style]="{'width': '80%'}">Name</th>
+            <th [style]="{'width': '20%'}">Actions</th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-feature>
+    <ng-template pTemplate="body" let-alert>
         <tr>
-            <td>{{feature.name}}</td>
-            <td><span (click)="deleteFeature(feature)" class="clickable pi pi-trash"></span></td>
+            <td>{{alert.name}}</td>
+            <td>
+                <span (click)="deleteAlert(alert)" class="mr-10 clickable pi pi-trash"></span>
+                <span (click)="zoomToAlert(alert)" class="clickable pi pi-search"></span>
+            </td>
         </tr>
     </ng-template>
 </p-table>
 
-<p-dialog (onHide)="closeModal(true)" header="Validate new drawing" [(visible)]="displayModal" [modal]="true" [style]="{width: '50vw'}"
+<p-dialog (onHide)="closeModal(true)" header="Validate new alert" [(visible)]="displayModal" [modal]="true" [style]="{width: '50vw'}"
     [draggable]="false" [resizable]="false">
     <p class="m-0">
-        <input placeholder="Feature name" type="text" pInputText [(ngModel)]="currentFeatureName"> 
+        <input placeholder="Alert name" type="text" pInputText [(ngModel)]="currentAlertName"> 
     </p>
     <ng-template pTemplate="footer">
-    <p-button icon="pi pi-check" (click)="validateDrawing()" label="Save" styleClass="p-button-success"></p-button>
-    <p-button icon="pi pi-trash" (click)="cancelDrawing()" label="cancel" styleClass="p-button-danger"></p-button>
+    <p-button icon="pi pi-check" (click)="validateAlert()" label="Save" styleClass="p-button-success"></p-button>
+    <p-button icon="pi pi-trash" (click)="cancelAlert()" label="cancel" styleClass="p-button-danger"></p-button>
     </ng-template>
 </p-dialog>

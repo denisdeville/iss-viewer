@@ -49,7 +49,7 @@ export class MapComponent {
   }
 
   private onPositionUpdate(satelliteInfo: SatelliteInfos) {
-    this.mapService.highlightPoint([satelliteInfo.longitude, satelliteInfo.latitude]);
+    this.mapService.updateSatelliteCoordinates([satelliteInfo.longitude, satelliteInfo.latitude]);
   }
 
   ngOnDestroy() {
