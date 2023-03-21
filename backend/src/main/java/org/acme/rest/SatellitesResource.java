@@ -40,8 +40,15 @@ public class SatellitesResource {
     @GET
     @Path("/sun/{id}")
     public Response GetSatelliteSunExposion(@PathParam("id") long id, @QueryParam("timestamps") String timestamps) throws CustomException {
-        List<SatelliteModel> model = satelliteService.GetSatelliteSunExposionById(id, timestamps);
-        return Response.ok().entity(model).build();
+        try {
+            List<SatelliteModel> model = satelliteService.GetSatelliteSunExposionById(id, timestamps);
+            return Response.ok().entity(model).build();
+        } catch(CustomException exception) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                  .type(MediaType.APPLICATION_JSON)
+                  .entity(new CustomExceptionDTO(exception))
+                  .build();
+        }
     }
 
 }
