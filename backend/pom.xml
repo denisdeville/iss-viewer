@@ -50,6 +50,17 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.orekit/orekit -->
+    <dependency>
+        <groupId>org.orekit</groupId>
+        <artifactId>orekit</artifactId>
+        <version>11.3.2</version>
+    </dependency>
+    <dependency>
+        <groupId>org.json</groupId>
+        <artifactId>json</artifactId>
+        <version>20220320</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

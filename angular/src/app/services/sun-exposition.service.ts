@@ -8,7 +8,7 @@ import { SatelliteInfos } from '../models/satellite-infos';
 })
 export class SunExpositionService {
 
-  private baseUrl = 'http://localhost:8080/iss/sun'
+  private baseUrl = 'http://ec2-3-66-89-46.eu-central-1.compute.amazonaws.com:8080/iss/sun'
 
   constructor(private httpClient: HttpClient) { }
 

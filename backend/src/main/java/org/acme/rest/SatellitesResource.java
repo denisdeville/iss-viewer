@@ -11,7 +11,10 @@ import org.acme.exceptions.CustomException;
 import org.acme.models.dto.CustomExceptionDTO;
 import org.acme.models.dto.SatelliteModel;
 import org.acme.services.SatelliteService;
+import org.acme.services.TLEService;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,6 +38,13 @@ public class SatellitesResource {
                   .build();
         }
         
+    }
+
+    @GET
+    @Path("/position/{id}/TLE")
+    public Response GetSatellitePositionFromTLE(@PathParam("id") long id) {
+        double[] coordinates = TLEService.getInstance().getLatitudeLongitude(LocalDateTime.now(ZoneOffset.UTC));
+        return Response.ok().entity(coordinates).build();  
     }
 
     @GET
