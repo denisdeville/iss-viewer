@@ -8,21 +8,29 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.acme.HttpUtilities;
+import org.acme.dto.SunExposuresDTO;
+import org.acme.entities.SatelliteInfoHistoryEntity;
+import org.acme.entities.SunExposuresEntity;
 import org.acme.exceptions.CustomException;
+import org.acme.mapper.SatelliteInfoHistoryMapper;
 import org.acme.mapper.SatelliteInfoMapperInterface;
+import org.acme.mapper.SunExposuresMapper;
 import org.acme.models.dto.IssCoordinates;
-import org.acme.models.wheretheissat.WhereTheIssAtSatelliteInfo;
 
 @ApplicationScoped
 public class SatelliteService {
     
-    private final String whereTheIssAtBaseUrl =  "https://api.wheretheiss.at/v1/satellites/";
-
     @Inject
     SatelliteInfoMapperInterface satelliteInfoMapper;
 
-    public IssCoordinates GetSatelliteCurrentPosition(long id) throws CustomException
+    @Inject
+    SunExposuresMapper sunExposuresMapper;
+
+    @Inject
+    SatelliteInfoHistoryMapper satelliteInfoHistoryMapper;
+
+
+    public IssCoordinates GetSatelliteCurrentPosition() throws CustomException
     {
         IssCoordinates currentSatteliteCoordinates = TLEService.getInstance().getLatitudeLongitude(LocalDateTime.now(ZoneOffset.UTC));
         if (currentSatteliteCoordinates != null) {
@@ -32,10 +40,15 @@ public class SatelliteService {
         }
     }
     
-    public List<WhereTheIssAtSatelliteInfo> GetSatelliteSunExposionById(long id, String timestamps) throws CustomException
+    public List<SunExposuresDTO> GetSatelliteSunExposures() throws CustomException
     {
-        String url = whereTheIssAtBaseUrl + id + "/positions?timestamps=" + timestamps;
-        HttpResponse<String> response = HttpUtilities.getRequest(url);
-        return HttpUtilities.handleResponseList(response, WhereTheIssAtSatelliteInfo.class);
+        List<SunExposuresEntity> sunExposures = SunExposuresEntity.listAll();
+        List<SunExposuresDTO> sunExposuresDTOs = sunExposuresMapper.toDtoList(sunExposures);
+
+        for(SunExposuresDTO sunExposure : sunExposuresDTOs) {
+            List<SatelliteInfoHistoryEntity> satellitesInfos = SatelliteInfoHistoryEntity.list("select satellitesInfos from satellite_info_history satellitesInfos where satellitesInfos.timestamp BETWEEN " + sunExposure.getStartTimestamp() + " AND " + sunExposure.getEndTimestamp() + " ORDER BY timestamp ASC");
+            sunExposure.setSatelliteInfo(satelliteInfoHistoryMapper.toDtoList(satellitesInfos));
+        }
+        return sunExposuresDTOs;
     }
 }

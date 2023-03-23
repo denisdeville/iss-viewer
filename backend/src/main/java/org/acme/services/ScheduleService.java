@@ -15,8 +15,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.acme.entities.SatelliteInfoHistory;
-import org.acme.entities.SunExposures;
+import org.acme.entities.SatelliteInfoHistoryEntity;
+import org.acme.entities.SunExposuresEntity;
 import org.acme.exceptions.CustomException;
 import org.acme.models.wheretheissat.WhereTheIssAtSatelliteInfo;
 import org.acme.services.wheretheissat.WhereTheIssAtService;
@@ -49,7 +49,7 @@ public class ScheduleService {
 
     String lastVisilibityInserted;
     String daylight = "daylight";
-    SunExposures lastSunExposuresInstance;
+    SunExposuresEntity lastSunExposuresInstance;
 
     @Scheduled(every = "20s")
     @Transactional
@@ -72,14 +72,14 @@ public class ScheduleService {
 
             Collections.sort(last10Positions);
 
-            List<SatelliteInfoHistory> last10PositionsHistory = new ArrayList<SatelliteInfoHistory>();
+            List<SatelliteInfoHistoryEntity> last10PositionsHistory = new ArrayList<SatelliteInfoHistoryEntity>();
             for (WhereTheIssAtSatelliteInfo info : last10Positions) {
                 if (lastVisilibityInserted == null) {
                     lastVisilibityInserted = info.getVisibility();
                 }
 
                 if (!lastVisilibityInserted.equals(daylight) && info.getVisibility().equals(daylight)) {
-                    SunExposures newSunExposure = new SunExposures(
+                    SunExposuresEntity newSunExposure = new SunExposuresEntity(
                         info.getTimestamp(),
                         null,
                         info.getLatitude(),
@@ -93,7 +93,7 @@ public class ScheduleService {
 
                 if (lastVisilibityInserted.equals(daylight) && !info.getVisibility().equals(daylight)) {
                     if (lastSunExposuresInstance == null) {
-                        lastSunExposuresInstance = SunExposures.find("select sunExp from sun_exposures sunExp where sunExp.endTimestamp is null").firstResult();
+                        lastSunExposuresInstance = SunExposuresEntity.find("select sunExp from sun_exposures sunExp where sunExp.endTimestamp is null").firstResult();
                     }
 
                     if (lastSunExposuresInstance != null) {
@@ -105,7 +105,7 @@ public class ScheduleService {
                     }
                 }
 
-                last10PositionsHistory.add(new SatelliteInfoHistory(
+                last10PositionsHistory.add(new SatelliteInfoHistoryEntity(
                         info.getTimestamp(),
                         info.getLatitude(),
                         info.getLongitude(),
@@ -115,7 +115,7 @@ public class ScheduleService {
             last10Positions.removeIf(p -> !p.getVisibility().equals(daylight));
 
             if (!last10Positions.isEmpty()) {
-                SatelliteInfoHistory.persist(last10PositionsHistory);
+                SatelliteInfoHistoryEntity.persist(last10PositionsHistory);
 
                 Log.info("Inserted new SatelliteInfoHistory for " + last10TimeStamps.toString());
             } 

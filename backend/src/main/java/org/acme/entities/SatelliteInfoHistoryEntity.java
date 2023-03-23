@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity(name="satellite_info_history")
-public class SatelliteInfoHistory extends PanacheEntityBase {
+public class SatelliteInfoHistoryEntity extends PanacheEntityBase {
     
     @Id
     private BigInteger timestamp;
@@ -16,10 +16,10 @@ public class SatelliteInfoHistory extends PanacheEntityBase {
     private Double longitude;
     private String visibility;
 
-    public SatelliteInfoHistory() {
+    public SatelliteInfoHistoryEntity() {
     }
 
-    public SatelliteInfoHistory(BigInteger timestamp, Double latitude, Double longitude, String visibility) {
+    public SatelliteInfoHistoryEntity(BigInteger timestamp, Double latitude, Double longitude, String visibility) {
         this.timestamp = timestamp;
         this.latitude = latitude;
         this.longitude = longitude;

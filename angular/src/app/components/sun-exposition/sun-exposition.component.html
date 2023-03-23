@@ -3,7 +3,7 @@
     <p-button class="col-4" type="button" icon="pi pi-refresh" (click)="reset()" styleClass="p-button-text"></p-button>
     <p-button class="col-4" type="button" icon="pi pi-chevron-right" (click)="next()" [disabled]="isLastPage()" styleClass="p-button-text"></p-button>
 </div>
-<p-table [value]="expositions" 
+<p-table [value]="sunExposures" 
     (onRowUnselect)="onRowUnelected($event)" 
     scrollHeight="75vh"
     [loading]="loading"
@@ -14,7 +14,8 @@
             <th>
                 <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
-            <th>Date</th>
+            <th>Start</th>
+            <th>End</th>
             <th>Actions</th>
         </tr>
     </ng-template>
@@ -23,7 +24,8 @@
             <td>
                 <p-tableCheckbox [value]="expo"></p-tableCheckbox>
             </td>
-            <td>{{expo.timestamp * 1000 | date: 'medium' }}</td>
+            <td>{{expo.startTimestamp * 1000 | date: 'medium' }}</td>
+            <td>{{expo.endTimestamp * 1000 | date: 'medium' }}</td>
             <td><span (click)="zoomToExpo(expo)" class="clickable pi pi-search"></span></td>
         </tr>
     </ng-template>

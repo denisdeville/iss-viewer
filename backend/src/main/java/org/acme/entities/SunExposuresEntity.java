@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity(name="sun_exposures")
-public class SunExposures extends PanacheEntityBase {
+public class SunExposuresEntity extends PanacheEntityBase {
     
     @Id
     @Column(name = "start_timestamp")
@@ -19,14 +19,14 @@ public class SunExposures extends PanacheEntityBase {
     private Double latitude;
     private Double longitude;
 
-    public SunExposures(BigInteger startTimestamp, BigInteger endTimestamp, Double latitude, Double longitude) {
+    public SunExposuresEntity(BigInteger startTimestamp, BigInteger endTimestamp, Double latitude, Double longitude) {
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public SunExposures() {
+    public SunExposuresEntity() {
     }
 
     public BigInteger getStartTimestamp() {

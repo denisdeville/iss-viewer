@@ -8,6 +8,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.acme.dto.SatelliteInfoDTO;
+import org.acme.dto.SunExposuresDTO;
+import org.acme.entities.SunExposuresEntity;
 import org.acme.exceptions.CustomException;
 import org.acme.models.dto.CustomExceptionDTO;
 import org.acme.models.dto.IssCoordinates;
@@ -33,7 +35,7 @@ public class SatellitesResource {
     @Path("/position/{id}")
     public Response GetSatelliteCurrentPosition(@PathParam("id") long id) {
         try {
-            IssCoordinates coordinates = satelliteService.GetSatelliteCurrentPosition(id);
+            IssCoordinates coordinates = satelliteService.GetSatelliteCurrentPosition();
             return Response.ok().entity(coordinates).build();
         } catch(CustomException exception) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -52,10 +54,10 @@ public class SatellitesResource {
     }
 
     @GET
-    @Path("/sun/{id}")
-    public Response GetSatelliteSunExposion(@PathParam("id") long id, @QueryParam("timestamps") String timestamps) throws CustomException {
+    @Path("/sun")
+    public Response GetSatelliteSunExposures(@PathParam("id") long id, @QueryParam("timestamps") String timestamps) throws CustomException {
         try {
-            List<WhereTheIssAtSatelliteInfo> model = satelliteService.GetSatelliteSunExposionById(id, timestamps);
+            List<SunExposuresDTO> model = satelliteService.GetSatelliteSunExposures();
             return Response.ok().entity(model).build();
         } catch(CustomException exception) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

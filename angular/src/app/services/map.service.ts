@@ -66,7 +66,7 @@ export class MapService {
           source: this._sunExpositionSource,
         });
 
-        this._drawSource = new VectorSource({});
+        this._drawSource = new VectorSource();
         this._drawVectorLayer = new VectorLayer({
           source: this._drawSource,
         });
@@ -125,19 +125,6 @@ export class MapService {
       }
     }
 
-    public removeSunExpositionHighlight(sunExposions: SatelliteInfos[]) {
-      for(let sunExposition of sunExposions) {
-        let feature = this._sunExpositionToFeatureMap[sunExposition.timestamp];
-        if (feature){
-          this._sunExpositionSource.removeFeature(feature);
-        }
-      }
-    }
-
-    public clearSunExpositionHighlight(): void {
-      this._sunExpositionSource.clear();
-    }
-
     public get map(): Map {
         return this._map;
     }
@@ -166,14 +153,56 @@ export class MapService {
 
       console.log('addMultiline', coordinates);
 
-      const lineString = new LineString(coordinates); 
-
-      const lineStringFeature = new Feature();
-      lineStringFeature.setGeometry(lineString);
+      const lineStringFeature = this.createFeature(coordinates);
 
       this._sunExpositionSource.addFeature(lineStringFeature);
 
       this.zoomTofeature(lineStringFeature);
+    }
 
+    private createFeature(points: number[][]) {
+      var pointsSplitted = [];
+      var pointsArray = [];
+      pointsSplitted.push(points[0]);
+      var lastLambda = points[0][0];
+    
+      for (var i = 1; i < points.length; i++) {
+        var lastPoint = points[i - 1];
+        var nextPoint = points[i];
+        if (Math.abs(nextPoint[0] - lastLambda) > 180) {
+          var deltaX = this.xToValueRange(nextPoint[0] - lastPoint[0]);
+          var deltaY = nextPoint[1] - lastPoint[1];
+          var deltaXS = this.xToValueRange(180 - nextPoint[0]);
+          var deltaYS;
+          if (deltaX === 0) {
+            deltaYS = 0;
+          } else {
+            deltaYS = deltaY / deltaX * deltaXS;
+          }
+          var sign = lastPoint[0] < 0 ? -1 : 1;
+          pointsSplitted.push([180 * sign, nextPoint[1] + deltaYS]);
+          pointsArray.push(pointsSplitted);
+          pointsSplitted = [];
+          pointsSplitted.push([-180 * sign, nextPoint[1] + deltaYS]);
+        }
+        pointsSplitted.push(nextPoint);
+        lastLambda = nextPoint[0];
+      }
+    
+      pointsArray.push(pointsSplitted);
+      var geom = new MultiLineString(pointsArray);
+      var feature = new Feature({
+        geometry: geom
+      });
+      return feature;
+    }
+    
+    private xToValueRange(x: number) {
+      if (Math.abs(x) > 180) {
+        var sign = x < 0 ? -1 : 1;
+        return x - 2 * 180 * sign;
+      } else {
+        return x;
+      }
     }
 }

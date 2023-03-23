@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { SatelliteInfos } from '../models/satellite-infos';
+import { SunExposureDto } from '../models/sun-exposures-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class SunExpositionService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getSatelliteSunExpositionsForTimestamp(id: number, timestamps: number[]): Observable<SatelliteInfos[]> {
-    return this.httpClient.get<SatelliteInfos[]>(`${this.baseUrl}/${id}?timestamps=${timestamps.join(',')}`);
+  public getSatelliteSunExposures(): Observable<SunExposureDto[]> {
+    return this.httpClient.get<SunExposureDto[]>(`${this.baseUrl}`);
   }
 }

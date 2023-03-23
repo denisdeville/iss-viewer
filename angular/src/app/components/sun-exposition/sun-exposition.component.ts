@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import Point from 'ol/geom/Point';
 import { SatelliteInfos } from 'src/app/models/satellite-infos';
+import { SunExposureDto } from 'src/app/models/sun-exposures-dto';
 import { SunExpositionService } from 'src/app/services/sun-exposition.service';
 import { TimeUtils } from 'src/app/utils/time-utils';
 import { MapService } from '../../services/map.service';
@@ -14,7 +15,7 @@ export class SunExpositionComponent {
 
   loading = false;
 
-  private _expositions: SatelliteInfos[] = [];
+  private _sunExposures: SunExposureDto[] = [];
 
   first = 0;
 
@@ -27,25 +28,26 @@ export class SunExpositionComponent {
   }
 
   public onRowSelected(event: any) {
-    this.mapService.highlightSunExposition([event.data])
+    this.zoomToExpo(event.data)
   }
-
+  
   public onRowUnelected(event: any) {
-    this.mapService.removeSunExpositionHighlight([event.data])
+    this.zoomToExpo(event.data)
   }
 
   public loadExpositions(): void {
-    const timestamps = TimeUtils.getNextTimestamps(10);
     this.loading = true;
-    this.sunExpositionService.getSatelliteSunExpositionsForTimestamp(25544, timestamps)
+    this.sunExpositionService.getSatelliteSunExposures()
       .subscribe(res => {
         this.loading = false;
-        this.expositions = this.expositions.concat(res);
+        this.sunExposures = this.sunExposures.concat(res);
       });
   }
 
-  zoomToExpo(sunExposition: SatelliteInfos) {
-    this.mapService.zoomToCoordinates([sunExposition.longitude, sunExposition.latitude]);
+  zoomToExpo(sunExposition: SunExposureDto) {
+    this.mapService.addMultiline(sunExposition.satelliteInfo.map((satelliteInfo) => {
+      return [satelliteInfo.longitude, satelliteInfo.latitude];
+    }));
   }
 
   next() {
@@ -58,8 +60,7 @@ export class SunExpositionComponent {
 
   reset() {
     this.first = 0;
-    this.expositions = [];
-    this.mapService.clearSunExpositionHighlight();
+    this.sunExposures = [];
     TimeUtils.resetCurrentTime();
     this.loadExpositions();
   }
@@ -72,19 +73,15 @@ export class SunExpositionComponent {
     return true;
   }
 
-  public get expositions(): SatelliteInfos[] {
-    return this._expositions;
+  public get sunExposures(): SunExposureDto[] {
+    return this._sunExposures;
   }
 
-  private set expositions(value: SatelliteInfos[]) {
-    this._expositions = value;
+  private set sunExposures(value: SunExposureDto[]) {
+    this._sunExposures = value;
   }
 
   public set selectedSatelliteInfos(value: SatelliteInfos[]) {
-    if (value.length == 0) {
-      this.mapService.clearSunExpositionHighlight();
-    } else {
-      this.mapService.highlightSunExposition(value);
-    }
+    
   }
 }
