@@ -9,8 +9,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.acme.HttpUtilities;
-import org.acme.dto.SatelliteInfoDTO;
-import org.acme.entities.SatelliteInfoEntity;
 import org.acme.exceptions.CustomException;
 import org.acme.mapper.SatelliteInfoMapperInterface;
 import org.acme.models.dto.IssCoordinates;
@@ -32,17 +30,6 @@ public class SatelliteService {
         } else {
             throw new CustomException("Unable to fetch current position of ISS from TLE propagation", 500);
         }
-    }
-    
-    public SatelliteInfoDTO GetSatelliteInformationByTimestamp(int timestamp) throws CustomException
-    {
-        SatelliteInfoEntity entity = SatelliteInfoEntity.find("timestamp", timestamp).firstResult();
-
-        if (entity != null) {
-            return satelliteInfoMapper.toResource(entity);
-        }
-
-        return null;
     }
     
     public List<WhereTheIssAtSatelliteInfo> GetSatelliteSunExposionById(long id, String timestamps) throws CustomException

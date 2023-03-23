@@ -13,6 +13,8 @@ import Draw from 'ol/interaction/Draw.js';
 import {defaults} from 'ol/interaction/defaults';
 import { Observable, Subject } from 'rxjs';
 import { DrawnFeaturesService } from './drawn-features.service';
+import MultiLineString from 'ol/geom/MultiLineString';
+import { LineString } from 'ol/geom';
 
 
 @Injectable({
@@ -158,5 +160,20 @@ export class MapService {
 
     public deleteDrawnFeature(feature: Feature) {
       this._drawSource.removeFeature(feature);
+    }
+
+    public addMultiline(coordinates: number[][]): void {
+
+      console.log('addMultiline', coordinates);
+
+      const lineString = new LineString(coordinates); 
+
+      const lineStringFeature = new Feature();
+      lineStringFeature.setGeometry(lineString);
+
+      this._sunExpositionSource.addFeature(lineStringFeature);
+
+      this.zoomTofeature(lineStringFeature);
+
     }
 }

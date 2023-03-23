@@ -16,11 +16,11 @@ export class MapComponent {
 
   map!: Map;
   $currentPosition!: Observable<IssCoordinates>;
-  
+
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   private satelliteId = 25544;
 
-  constructor(private satellitePositionService: SatellitePositionService, 
+  constructor(private satellitePositionService: SatellitePositionService,
     private mapService: MapService,
     private customMessageService: CustomMessagesService) { }
 

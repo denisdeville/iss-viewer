@@ -1,6 +1,9 @@
 package org.acme.models.wheretheissat;
 
-public class WhereTheIssAtSatelliteInfo {
+import java.math.BigInteger;
+import java.util.Comparator;
+
+public class WhereTheIssAtSatelliteInfo implements Comparable<WhereTheIssAtSatelliteInfo> {
 
     private String name;
     private long id;
@@ -10,7 +13,7 @@ public class WhereTheIssAtSatelliteInfo {
     private double velocity;
     private String visibility;
     private double footprint;
-    private double timestamp;
+    private BigInteger timestamp;
     private double daynum;
     private double solar_lat;
     private double solar_lon;
@@ -20,7 +23,7 @@ public class WhereTheIssAtSatelliteInfo {
     }
 
     public WhereTheIssAtSatelliteInfo(String name, long id, double latitude, double longitude, double altitude, double velocity,
-            String visibility, double footprint, double timestamp, double daynum, double solar_lat, double solar_lon,
+            String visibility, double footprint, BigInteger timestamp, double daynum, double solar_lat, double solar_lon,
             String units) {
         this.name = name;
         this.id = id;
@@ -86,10 +89,10 @@ public class WhereTheIssAtSatelliteInfo {
     public void setFootprint(double footprint) {
         this.footprint = footprint;
     }
-    public double getTimestamp() {
+    public BigInteger getTimestamp() {
         return timestamp;
     }
-    public void setTimestamp(double timestamp) {
+    public void setTimestamp(BigInteger timestamp) {
         this.timestamp = timestamp;
     }
     public double getDaynum() {
@@ -115,5 +118,16 @@ public class WhereTheIssAtSatelliteInfo {
     }
     public void setUnits(String units) {
         this.units = units;
+    }
+
+    @Override
+    public String toString() {
+        return "WhereTheIssAtSatelliteInfo [latitude=" + latitude + ", longitude=" + longitude + ", visibility="
+                + visibility + ", timestamp=" + timestamp + "]";
+    }
+
+    @Override
+    public int compareTo(WhereTheIssAtSatelliteInfo o) {
+        return this.getTimestamp().compareTo(o.getTimestamp());
     }
 }
