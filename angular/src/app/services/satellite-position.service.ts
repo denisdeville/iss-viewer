@@ -8,7 +8,7 @@ import { SatelliteInfos } from '../models/satellite-infos';
 })
 export class SatellitePositionService {
 
-  private baseUrl = 'http://ec2-3-66-89-46.eu-central-1.compute.amazonaws.com:8080/iss/position'
+  private baseUrl = 'http://issviewerloadbalancer-340434005.eu-central-1.elb.amazonaws.com:8080/iss/position'
 
   constructor(private httpClient: HttpClient) { }
 

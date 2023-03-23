@@ -7,6 +7,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.acme.dto.SatelliteInfoDTO;
 import org.acme.exceptions.CustomException;
 import org.acme.models.dto.CustomExceptionDTO;
 import org.acme.models.dto.SatelliteModel;
@@ -45,6 +46,13 @@ public class SatellitesResource {
     public Response GetSatellitePositionFromTLE(@PathParam("id") long id) {
         double[] coordinates = TLEService.getInstance().getLatitudeLongitude(LocalDateTime.now(ZoneOffset.UTC));
         return Response.ok().entity(coordinates).build();  
+    }
+
+    @GET
+    @Path("/position/timestamp/{timestamp}")
+    public Response GetSatellitePositionFromTLE(@PathParam("timestamp") int timestamp) throws CustomException {
+        SatelliteInfoDTO model = satelliteService.GetSatelliteInformationByTimestamp(timestamp); 
+        return Response.ok().entity(model).build();
     }
 
     @GET
