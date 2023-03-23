@@ -10,12 +10,12 @@ import javax.ws.rs.core.Response;
 import org.acme.dto.SatelliteInfoDTO;
 import org.acme.exceptions.CustomException;
 import org.acme.models.dto.CustomExceptionDTO;
-import org.acme.models.dto.SatelliteModel;
+import org.acme.models.dto.IssCoordinates;
+import org.acme.models.wheretheissat.WhereTheIssAtSatelliteInfo;
+import org.acme.models.wheretheissat.WhereTheIssAtTleData;
 import org.acme.services.SatelliteService;
-import org.acme.services.TLEService;
+import org.acme.services.wheretheissat.WhereTheIssAtService;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,13 +25,16 @@ public class SatellitesResource {
 
     @Inject
     SatelliteService satelliteService;
+    
+    @Inject
+    WhereTheIssAtService whereTheIssAtService;
 
     @GET
     @Path("/position/{id}")
-    public Response GetSatellitePosition(@PathParam("id") long id) {
+    public Response GetSatelliteCurrentPosition(@PathParam("id") long id) {
         try {
-            SatelliteModel model = satelliteService.GetSatelliteInformationById(id);
-            return Response.ok().entity(model).build();
+            IssCoordinates coordinates = satelliteService.GetSatelliteCurrentPosition(id);
+            return Response.ok().entity(coordinates).build();
         } catch(CustomException exception) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                   .type(MediaType.APPLICATION_JSON)
@@ -42,24 +45,17 @@ public class SatellitesResource {
     }
 
     @GET
-    @Path("/position/{id}/TLE")
-    public Response GetSatellitePositionFromTLE(@PathParam("id") long id) {
-        double[] coordinates = TLEService.getInstance().getLatitudeLongitude(LocalDateTime.now(ZoneOffset.UTC));
-        return Response.ok().entity(coordinates).build();  
-    }
-
-    @GET
-    @Path("/position/timestamp/{timestamp}")
-    public Response GetSatellitePositionFromTLE(@PathParam("timestamp") int timestamp) throws CustomException {
-        SatelliteInfoDTO model = satelliteService.GetSatelliteInformationByTimestamp(timestamp); 
-        return Response.ok().entity(model).build();
+    @Path("/tle/{id}")
+    public Response GetTleDataById(@PathParam("id") int id) throws CustomException {
+        WhereTheIssAtTleData data = this.whereTheIssAtService.GetTleDataById(id);
+        return Response.ok().entity(data).build();
     }
 
     @GET
     @Path("/sun/{id}")
     public Response GetSatelliteSunExposion(@PathParam("id") long id, @QueryParam("timestamps") String timestamps) throws CustomException {
         try {
-            List<SatelliteModel> model = satelliteService.GetSatelliteSunExposionById(id, timestamps);
+            List<WhereTheIssAtSatelliteInfo> model = satelliteService.GetSatelliteSunExposionById(id, timestamps);
             return Response.ok().entity(model).build();
         } catch(CustomException exception) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import Map from 'ol/Map.js';
-import { SatelliteInfos } from '../../models/satellite-infos';
 import { SatellitePositionService } from '../../services/satellite-position.service';
-import { interval, Observable, of, ReplaySubject, switchMap, takeUntil } from 'rxjs';
+import { interval, Observable, ReplaySubject, switchMap, takeUntil } from 'rxjs';
 import { MapService } from '../../services/map.service';
 import { CustomMessagesService } from 'src/app/services/custom-messages.service';
+import { IssCoordinates } from 'src/app/models/iss-coordinates';
 
 
 @Component({
@@ -15,7 +15,7 @@ import { CustomMessagesService } from 'src/app/services/custom-messages.service'
 export class MapComponent {
 
   map!: Map;
-  $currentPosition!: Observable<SatelliteInfos>;
+  $currentPosition!: Observable<IssCoordinates>;
   
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   private satelliteId = 25544;
@@ -48,7 +48,7 @@ export class MapComponent {
     this.$currentPosition.subscribe(satelliteInfo => this.onPositionUpdate(satelliteInfo));
   }
 
-  private onPositionUpdate(satelliteInfo: SatelliteInfos) {
+  private onPositionUpdate(satelliteInfo: IssCoordinates) {
     this.mapService.updateSatelliteCoordinates([satelliteInfo.longitude, satelliteInfo.latitude]);
   }
 

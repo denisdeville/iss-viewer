@@ -8,7 +8,7 @@ import { SatelliteInfos } from '../models/satellite-infos';
 })
 export class SunExpositionService {
 
-  private baseUrl = 'http://issviewerloadbalancer-340434005.eu-central-1.elb.amazonaws.com:8080/iss/sun'
+  private baseUrl = 'http://localhost:8080/iss/sun'
 
   constructor(private httpClient: HttpClient) { }
 

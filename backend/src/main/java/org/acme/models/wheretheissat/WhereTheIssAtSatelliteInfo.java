@@ -1,6 +1,6 @@
-package org.acme.models.dto;
+package org.acme.models.wheretheissat;
 
-public class SatelliteModel {
+public class WhereTheIssAtSatelliteInfo {
 
     private String name;
     private long id;
@@ -16,10 +16,10 @@ public class SatelliteModel {
     private double solar_lon;
     private String units;
 
-    public SatelliteModel() {
+    public WhereTheIssAtSatelliteInfo() {
     }
 
-    public SatelliteModel(String name, long id, double latitude, double longitude, double altitude, double velocity,
+    public WhereTheIssAtSatelliteInfo(String name, long id, double latitude, double longitude, double altitude, double velocity,
             String visibility, double footprint, double timestamp, double daynum, double solar_lat, double solar_lon,
             String units) {
         this.name = name;

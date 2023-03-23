@@ -2,6 +2,7 @@ package org.acme.services;
 
 import java.io.File;
 
+import org.acme.models.dto.IssCoordinates;
 import org.hipparchus.util.FastMath;
 import org.orekit.bodies.BodyShape;
 import org.orekit.bodies.GeodeticPoint;
@@ -27,7 +28,7 @@ public class TLEService {
 
     public static TLEService getInstance() {
         if (instance == null) {
-            instance = new TLEService("1 25544U 98067A   23081.03898101  .00015358  00000+0  28263-3 0  9999", "2 25544  51.6417  40.2943 0006096 117.6201   7.3764 15.49366819388274");
+            instance = new TLEService();
         }
         return instance;
     }
@@ -38,24 +39,30 @@ public class TLEService {
     private BodyShape earth;
     private AbsoluteDate absoluteDate;
 
-    private TLEService(String tleLine1, String tleLine2) {
+    // Should find a better solution to initialize TLEService
+    private String defaultLine1 = "1 25544U 98067A   23082.12970756  .00016190  00000+0  29707-3 0  9996";
+    private String defaultLine2 = "2 25544  51.6419  34.8951 0005978 121.0982 331.7746 15.49406253388447";
+
+    private TLEService() {
         File orekitData = new File("orekit-data");
         DataProvidersManager manager = DataContext.getDefault().getDataProvidersManager();
         manager.addProvider(new DirectoryCrawler(orekitData));
-        
-        //=======================================================//
-        tle = new TLE(tleLine1, tleLine2);
-        //Get an unspecified International Terrestrial Reference Frame.
+
+        tle = new TLE(defaultLine1, defaultLine2);
+       
         earthFrame = FramesFactory.getITRF(IERSConventions.IERS_2010, true);
-        //Modeling of a one-axis ellipsoid.
-        //One-axis ellipsoids is a good approximate model for most planet-size and larger natural bodies.
         earth = new OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
                 Constants.WGS84_EARTH_FLATTENING,
                 earthFrame);
         propagator = TLEPropagator.selectExtrapolator(tle);
     }
 
-    public double[] getLatitudeLongitude(LocalDateTime dateTime) {
+    public void updateTleData(String line1, String line2) {
+        tle = new TLE(line1, line2);
+        propagator = TLEPropagator.selectExtrapolator(tle);
+    }
+
+    public IssCoordinates getLatitudeLongitude(LocalDateTime dateTime) {
         absoluteDate = new AbsoluteDate(
                 dateTime.getYear(),
                 dateTime.getMonthValue(),
@@ -70,10 +77,10 @@ public class TLEService {
                 pvCoordinates.getPosition(),
                 earthFrame,
                 absoluteDate);
-        double actualLatitude = FastMath.toDegrees(geodeticPoint.getLatitude());
-        double actualLongitude = FastMath.toDegrees(geodeticPoint.getLongitude());
+        double currentLatitude = FastMath.toDegrees(geodeticPoint.getLatitude());
+        double currentLongitude = FastMath.toDegrees(geodeticPoint.getLongitude());
 
-        return new double[]{actualLatitude, actualLongitude};
+        return new IssCoordinates(currentLongitude, currentLatitude);
     }
 
 
