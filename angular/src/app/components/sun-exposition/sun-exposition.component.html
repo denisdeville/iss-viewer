@@ -24,8 +24,8 @@
             <td>
                 <p-tableCheckbox [value]="expo"></p-tableCheckbox>
             </td>
-            <td>{{expo.startTimestamp * 1000 | date: 'medium' }}</td>
-            <td>{{expo.endTimestamp * 1000 | date: 'medium' }}</td>
+            <td>{{expo.startTimestamp * 1000 | date: 'short' }}</td>
+            <td>{{expo.endTimestamp != null ? (expo.endTimestamp * 1000 | date: 'short') : 'On going' }}</td>
             <td><span (click)="zoomToExpo(expo)" class="clickable pi pi-search"></span></td>
         </tr>
     </ng-template>

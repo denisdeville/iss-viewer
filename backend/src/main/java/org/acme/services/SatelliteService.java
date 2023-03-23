@@ -46,7 +46,12 @@ public class SatelliteService {
         List<SunExposuresDTO> sunExposuresDTOs = sunExposuresMapper.toDtoList(sunExposures);
 
         for(SunExposuresDTO sunExposure : sunExposuresDTOs) {
-            List<SatelliteInfoHistoryEntity> satellitesInfos = SatelliteInfoHistoryEntity.list("select satellitesInfos from satellite_info_history satellitesInfos where satellitesInfos.timestamp BETWEEN " + sunExposure.getStartTimestamp() + " AND " + sunExposure.getEndTimestamp() + " ORDER BY timestamp ASC");
+            List<SatelliteInfoHistoryEntity> satellitesInfos;
+            if (sunExposure.getEndTimestamp() != null) {
+                satellitesInfos = SatelliteInfoHistoryEntity.list("select satellitesInfos from satellite_info_history satellitesInfos where satellitesInfos.timestamp BETWEEN " + sunExposure.getStartTimestamp() + " AND " + sunExposure.getEndTimestamp() + " ORDER BY timestamp ASC");
+            } else {
+                satellitesInfos = SatelliteInfoHistoryEntity.list("select satellitesInfos from satellite_info_history satellitesInfos where satellitesInfos.timestamp > " + sunExposure.getStartTimestamp() + " ORDER BY timestamp ASC");
+            }
             sunExposure.setSatelliteInfo(satelliteInfoHistoryMapper.toDtoList(satellitesInfos));
         }
         return sunExposuresDTOs;
