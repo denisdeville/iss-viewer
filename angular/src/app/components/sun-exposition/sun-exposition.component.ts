@@ -28,12 +28,9 @@ export class SunExpositionComponent {
   }
 
   public onRowSelected(event: any) {
-    this.zoomToExpo(event.data)
+    this.zoomToExpo(event.data);
   }
-  
-  public onRowUnelected(event: any) {
-    this.zoomToExpo(event.data)
-  }
+
 
   public loadExpositions(): void {
     this.loading = true;

@@ -45,6 +45,8 @@ export class MapService {
     private drawEndSubject = new Subject<Feature>();
     public onDrawEnd$: Observable<Feature> = this.drawEndSubject.asObservable();
 
+    private _currentLineStringFeature!: Feature;
+
     constructor(private drawnFeatureService: DrawnFeaturesService) { }
 
     public initialize(): void {
@@ -151,13 +153,17 @@ export class MapService {
 
     public addMultiline(coordinates: number[][]): void {
 
-      console.log('addMultiline', coordinates);
+      if (this._currentLineStringFeature != null) {
+        this._sunExpositionSource.removeFeature(this._currentLineStringFeature);
+      }
 
       const lineStringFeature = this.createFeature(coordinates);
 
       this._sunExpositionSource.addFeature(lineStringFeature);
 
       this.zoomTofeature(lineStringFeature);
+
+      this._currentLineStringFeature = lineStringFeature;
     }
 
     private createFeature(points: number[][]) {
