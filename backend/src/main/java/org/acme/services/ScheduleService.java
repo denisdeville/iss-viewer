@@ -67,10 +67,6 @@ public class ScheduleService {
 
             Collections.sort(last10Positions);
 
-            for(WhereTheIssAtSatelliteInfo info : last10Positions) {
-                Log.info("[" + info.getLongitude() + ", " + info.getLatitude() + "]");
-            }
-
             List<SatelliteInfoHistoryEntity> last10PositionsHistory = new ArrayList<SatelliteInfoHistoryEntity>();
             for (WhereTheIssAtSatelliteInfo info : last10Positions) {
                 if (lastVisilibityInserted == null) {
