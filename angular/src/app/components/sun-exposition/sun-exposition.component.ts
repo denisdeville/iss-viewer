@@ -46,9 +46,7 @@ export class SunExpositionComponent {
   }
 
   zoomToExpo(sunExposition: SunExposureDto) {
-    this.mapService.addMultiline(sunExposition.satelliteInfo.map((satelliteInfo) => {
-      return [satelliteInfo.longitude, satelliteInfo.latitude];
-    }));
+    this.mapService.highlightSunExposition(sunExposition);
   }
 
   next() {

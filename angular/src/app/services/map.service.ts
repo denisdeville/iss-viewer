@@ -15,6 +15,7 @@ import { Observable, Subject } from 'rxjs';
 import { DrawnFeaturesService } from './drawn-features.service';
 import MultiLineString from 'ol/geom/MultiLineString';
 import { LineString } from 'ol/geom';
+import { SunExposureDto } from '../models/sun-exposures-dto';
 
 
 @Injectable({
@@ -27,6 +28,7 @@ export class MapService {
     private point: Point = new Point([0, 0]);
     private pointFeature = new Feature();
     private iconStyle = OlUtils.getDefaultIconStyle();
+
     private sunIconStyle = OlUtils.getSunIconStyle();
 
     private _vectorSource!: VectorSource;
@@ -102,19 +104,6 @@ export class MapService {
         this.drawnFeatureService.checkIntersections(this.point);
     }
 
-    public highlightSunExposition(sunExpositions: SatelliteInfos[]): void {
-      for(let sunExposition of sunExpositions) {
-        let feature = new Feature();
-        feature.setStyle(this.sunIconStyle);
-  
-        feature.setGeometry(new Point([sunExposition.longitude, sunExposition.latitude]));
-  
-        this._sunExpositionToFeatureMap[sunExposition.timestamp] = feature;
-  
-        this._sunExpositionSource.addFeature(feature);
-      }
-    }
-
     public zoomToCoordinates(coordinates: number[]) {
       this.map.getView().setCenter(coordinates);
       this.map.getView().setZoom(6);
@@ -157,19 +146,39 @@ export class MapService {
       }
     }
 
-    public addMultiline(coordinates: number[][]): void {
+    public highlightSunExposition(sunExposure: SunExposureDto): void {
 
       if (this._currentLineStringFeature != null) {
         this._sunExpositionSource.removeFeature(this._currentLineStringFeature);
+        this._sunExpositionSource.clear();
       }
 
-      const lineStringFeature = this.createFeature(coordinates);
+      const coordinates = sunExposure.satelliteInfo.map((satelliteInfo) => {
+          return [satelliteInfo.longitude, satelliteInfo.latitude];
+      });
 
-      this._sunExpositionSource.addFeature(lineStringFeature);
+      if (coordinates != null && coordinates.length > 0 && coordinates[0].length > 0) {
+        const lineStringFeature = this.createFeature(coordinates);
 
-      this.zoomTofeature(lineStringFeature);
+        var firstPointFeature = new Feature({
+          geometry: new Point(coordinates[0])
+        });
 
-      this._currentLineStringFeature = lineStringFeature;
+        var lastPointFeature = new Feature({
+          geometry: new Point(coordinates[coordinates.length -1])
+        });
+
+        lastPointFeature.setStyle(OlUtils.getLineStringStartEndStyle(this.timestampToDateFormat(sunExposure.endTimestamp)));
+        firstPointFeature.setStyle(OlUtils.getLineStringStartEndStyle(this.timestampToDateFormat(sunExposure.startTimestamp)));
+
+        this._sunExpositionSource.addFeature(lineStringFeature);
+        this._sunExpositionSource.addFeature(firstPointFeature);
+        this._sunExpositionSource.addFeature(lastPointFeature);
+
+        this.zoomTofeature(lineStringFeature);
+  
+        this._currentLineStringFeature = lineStringFeature;
+      }
     }
 
     private createFeature(points: number[][]) {
@@ -216,5 +225,10 @@ export class MapService {
       } else {
         return x;
       }
+    }
+
+    private timestampToDateFormat(timestamp: number) {
+      const date = new Date(timestamp * 1000);
+      return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
     }
 }
