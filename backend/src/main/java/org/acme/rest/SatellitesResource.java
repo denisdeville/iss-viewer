@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 
 import org.acme.dto.SatelliteInfoDTO;
 import org.acme.dto.SunExposuresDTO;
+import org.acme.dto.SunExposuresPaginationDTO;
 import org.acme.entities.SunExposuresEntity;
 import org.acme.exceptions.CustomException;
 import org.acme.models.dto.CustomExceptionDTO;
@@ -17,6 +18,8 @@ import org.acme.models.wheretheissat.WhereTheIssAtSatelliteInfo;
 import org.acme.models.wheretheissat.WhereTheIssAtTleData;
 import org.acme.services.SatelliteService;
 import org.acme.services.wheretheissat.WhereTheIssAtService;
+
+import io.quarkus.logging.Log;
 
 import java.util.List;
 
@@ -32,8 +35,8 @@ public class SatellitesResource {
     WhereTheIssAtService whereTheIssAtService;
 
     @GET
-    @Path("/position/{id}")
-    public Response GetSatelliteCurrentPosition(@PathParam("id") long id) {
+    @Path("/position")
+    public Response GetSatelliteCurrentPosition() {
         try {
             IssCoordinates coordinates = satelliteService.GetSatelliteCurrentPosition();
             return Response.ok().entity(coordinates).build();
@@ -47,17 +50,24 @@ public class SatellitesResource {
     }
 
     @GET
-    @Path("/tle/{id}")
-    public Response GetTleDataById(@PathParam("id") int id) throws CustomException {
-        WhereTheIssAtTleData data = this.whereTheIssAtService.GetTleDataById(id);
-        return Response.ok().entity(data).build();
+    @Path("/sun")
+    public Response GetSatelliteSunExposures() throws CustomException {
+        try {
+            List<SunExposuresDTO> model = satelliteService.GetSatelliteSunExposures();
+            return Response.ok().entity(model).build();
+        } catch(CustomException exception) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                  .type(MediaType.APPLICATION_JSON)
+                  .entity(new CustomExceptionDTO(exception))
+                  .build();
+        }
     }
 
     @GET
-    @Path("/sun")
-    public Response GetSatelliteSunExposures(@PathParam("id") long id, @QueryParam("timestamps") String timestamps) throws CustomException {
+    @Path("/sun/pagination")
+    public Response GetSatelliteSunExposuresPagination(@QueryParam("pageNumber") int pageNumber, @QueryParam("pageSize") int pageSize) throws CustomException {
         try {
-            List<SunExposuresDTO> model = satelliteService.GetSatelliteSunExposures();
+            SunExposuresPaginationDTO model = satelliteService.GetSatelliteSunExposuresPagination(pageNumber, pageSize);
             return Response.ok().entity(model).build();
         } catch(CustomException exception) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

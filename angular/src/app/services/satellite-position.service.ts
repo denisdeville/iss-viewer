@@ -9,11 +9,11 @@ import { IssCoordinates } from '../models/iss-coordinates';
 })
 export class SatellitePositionService {
 
-  private baseUrl = `${environment.apiUrl}/iss/position`;
+  private baseUrl = `${environment.apiUrl}`;
 
   constructor(private httpClient: HttpClient) { }
 
-  public getSatelliteInfos(id: number): Observable<IssCoordinates> {
-    return this.httpClient.get<IssCoordinates>(`${this.baseUrl}/${id}`)
+  public getSatelliteCurrentPosition(): Observable<IssCoordinates> {
+    return this.httpClient.get<IssCoordinates>(`${this.baseUrl}/iss/position`)
   }
 }

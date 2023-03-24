@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import Point from 'ol/geom/Point';
+import { LazyLoadEvent } from 'primeng/api';
 import { SatelliteInfos } from 'src/app/models/satellite-infos';
 import { SunExposureDto } from 'src/app/models/sun-exposures-dto';
 import { SunExpositionService } from 'src/app/services/sun-exposition.service';
@@ -17,32 +18,44 @@ export class SunExpositionComponent {
 
   private _sunExposures: SunExposureDto[] = [];
 
-  first = 0;
+  currentPage = 0;
 
-  rows = 10;
+  pageSize = 10;
+
+  pageCount = 0;
+
+  private cachedSunExposure = new Map<number, SunExposureDto[]>();
 
   constructor(private mapService: MapService, private sunExpositionService: SunExpositionService) { }
 
   ngOnInit() {
-    this.loadExpositions();
+    this.loadNextPage();
   }
 
   public onRowSelected(event: any) {
     this.zoomToExpo(event.data);
   }
-  
+
   public onRowUnselect() {
     this.mapService.clearSunExposuresLayer();
   }
 
 
-  public loadExpositions(): void {
+  public loadNextPage(): void {
     this.loading = true;
-    this.sunExpositionService.getSatelliteSunExposures()
-      .subscribe(res => {
-        this.loading = false;
-        this.sunExposures = this.sunExposures.concat(res);
-      });
+    const cachedData = this.cachedSunExposure.get(this.currentPage);
+    if (cachedData != null) {
+      this.sunExposures = cachedData;
+      this.loading = false;
+    } else {
+      this.sunExpositionService.getSatelliteSunExposuresPagination(this.currentPage, this.pageSize)
+        .subscribe(res => {
+          this.loading = false;
+          this.pageCount = res.pageCount;
+          this.sunExposures = res.sunExposures;
+          this.cachedSunExposure.set(this.currentPage, res.sunExposures);
+        });
+    }
   }
 
   zoomToExpo(sunExposition: SunExposureDto) {
@@ -50,26 +63,26 @@ export class SunExpositionComponent {
   }
 
   next() {
-    this.loadExpositions();
+    this.currentPage++;
+    this.loadNextPage();
   }
 
   prev() {
-    this.first = this.first - this.rows;
+    this.currentPage--;
+    this.loadNextPage();
   }
 
   reset() {
-    this.first = 0;
-    this.sunExposures = [];
-    TimeUtils.resetCurrentTime();
-    this.loadExpositions();
+    this.currentPage = 0;
+    this.loadNextPage();
   }
 
   isLastPage(): boolean {
-    return false;
+    return this.currentPage == this.pageCount-1;
   }
 
   isFirstPage(): boolean {
-    return true;
+    return this.currentPage == 0;
   }
 
   public get sunExposures(): SunExposureDto[] {
@@ -78,9 +91,5 @@ export class SunExpositionComponent {
 
   private set sunExposures(value: SunExposureDto[]) {
     this._sunExposures = value;
-  }
-
-  public set selectedSatelliteInfos(value: SatelliteInfos[]) {
-    
   }
 }

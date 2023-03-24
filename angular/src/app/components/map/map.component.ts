@@ -29,7 +29,7 @@ export class MapComponent {
     this.mapService.initialize();
 
     this.satellitePositionService
-      .getSatelliteInfos(this.satelliteId)
+      .getSatelliteCurrentPosition()
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: newSatelliteData => this.onPositionUpdate(newSatelliteData),
@@ -42,7 +42,7 @@ export class MapComponent {
   public updateSatellitePosition(): void {
     this.$currentPosition = interval(2000).pipe(
       takeUntil(this.destroyed$),
-      switchMap(() => this.satellitePositionService.getSatelliteInfos(this.satelliteId))
+      switchMap(() => this.satellitePositionService.getSatelliteCurrentPosition())
     );
 
     this.$currentPosition.subscribe(satelliteInfo => this.onPositionUpdate(satelliteInfo));
