@@ -1,7 +1,6 @@
 package org.acme.models.wheretheissat;
 
 import java.math.BigInteger;
-import java.util.Comparator;
 
 public class WhereTheIssAtSatelliteInfo implements Comparable<WhereTheIssAtSatelliteInfo> {
 

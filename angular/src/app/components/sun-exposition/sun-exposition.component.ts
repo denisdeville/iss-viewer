@@ -11,7 +11,7 @@ import { MapService } from '../../services/map.service';
 })
 export class SunExpositionComponent {
 
-  loading = false;
+  loading = true;
 
   private _sunExposures: SunExposureDto[] = [];
 

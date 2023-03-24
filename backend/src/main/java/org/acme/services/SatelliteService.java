@@ -1,6 +1,5 @@
 package org.acme.services;
 
-import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
