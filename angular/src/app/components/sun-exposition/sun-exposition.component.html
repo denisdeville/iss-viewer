@@ -8,7 +8,8 @@
     scrollHeight="75vh"
     [loading]="loading"
     [(selection)]="selectedSatelliteInfos"
-    (onRowSelect)="onRowSelected($event)" >
+    (onRowSelect)="onRowSelected($event)"
+    (onRowUnselect)="onRowUnselect()" >
     <ng-template pTemplate="header">
         <tr>
             <th></th>

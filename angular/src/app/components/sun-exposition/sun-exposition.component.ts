@@ -30,6 +30,10 @@ export class SunExpositionComponent {
   public onRowSelected(event: any) {
     this.zoomToExpo(event.data);
   }
+  
+  public onRowUnselect() {
+    this.mapService.clearSunExposuresLayer();
+  }
 
 
   public loadExpositions(): void {

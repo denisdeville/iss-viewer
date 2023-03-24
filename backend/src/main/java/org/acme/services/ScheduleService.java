@@ -23,6 +23,7 @@ import org.acme.models.wheretheissat.WhereTheIssAtTleData;
 import org.acme.services.wheretheissat.WhereTheIssAtService;
 
 import io.quarkus.logging.Log;
+import io.quarkus.panache.common.Parameters;
 import io.quarkus.scheduler.Scheduled;
 
 @ApplicationScoped
@@ -34,11 +35,9 @@ public class ScheduleService {
     @Scheduled(every = "20s")
     public void updateTleData() {
         try {
-            Log.info("Refreshing TLE data ...");
             WhereTheIssAtTleData tleData = this.whereTheIssAtService.GetTleDataById(25544);
             TLEService.getInstance().updateTleData(tleData.getLine1(),
                     tleData.getLine2());
-            Log.info("TLE data refreshed" + tleData.toString());
         } catch (Exception ex) {
             Log.error("Could not refresh TLE data, cause: " + ex.getMessage());
         }
@@ -48,15 +47,14 @@ public class ScheduleService {
     String daylight = "daylight";
     SunExposuresEntity lastSunExposuresInstance;
 
-    @Scheduled(every = "20s")
+    @Scheduled(every = "60s")
     @Transactional
     public void getLast10PositionOfIss() {
-
         LocalDateTime now = LocalDateTime.now();
         List<Long> last10TimeStamps = new ArrayList<Long>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 6; i++) {
             last10TimeStamps.add(Timestamp.valueOf(now).getTime() / 1000);
-            now = now.minusSeconds(2);
+            now = now.minusSeconds(10);
         }
 
         String timestampStringList = last10TimeStamps.stream()
@@ -68,6 +66,10 @@ public class ScheduleService {
                     .GetSatellitePositionByIdAndTimestamps(25544, timestampStringList);
 
             Collections.sort(last10Positions);
+
+            for(WhereTheIssAtSatelliteInfo info : last10Positions) {
+                Log.info("[" + info.getLongitude() + ", " + info.getLatitude() + "]");
+            }
 
             List<SatelliteInfoHistoryEntity> last10PositionsHistory = new ArrayList<SatelliteInfoHistoryEntity>();
             for (WhereTheIssAtSatelliteInfo info : last10Positions) {
@@ -96,7 +98,7 @@ public class ScheduleService {
 
                     if (lastSunExposuresInstance != null) {
                         lastSunExposuresInstance.setEndTimestamp(info.getTimestamp());
-                        lastSunExposuresInstance.persist();
+                        SunExposuresEntity.update("UPDATE FROM sun_exposures SET endTimestamp = :endTimestamp where startTimestamp = :startTimestamp", Parameters.with("endTimestamp",lastSunExposuresInstance.getEndTimestamp()).and("startTimestamp",lastSunExposuresInstance.getStartTimestamp()));
                         Log.info("Closed sun exposure started at" + lastSunExposuresInstance.getStartTimestamp()
                                 + ", ended at " + lastSunExposuresInstance.getEndTimestamp());
                         lastSunExposuresInstance = null;

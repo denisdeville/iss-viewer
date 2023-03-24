@@ -151,6 +151,12 @@ export class MapService {
       this._drawSource.removeFeature(feature);
     }
 
+    public clearSunExposuresLayer(): void {
+      if (this._currentLineStringFeature != null) {
+        this._sunExpositionSource.removeFeature(this._currentLineStringFeature);
+      }
+    }
+
     public addMultiline(coordinates: number[][]): void {
 
       if (this._currentLineStringFeature != null) {
