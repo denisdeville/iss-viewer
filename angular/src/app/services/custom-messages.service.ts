@@ -20,6 +20,14 @@ export class CustomMessagesService {
     this.onErrorSubject.next({summary: summary, detail: details, severity: 'error'});
   }
 
+  public handleError(error: any) {
+   if (error.name != null && error.message != null) {
+    this.addError(error.name, error.message)
+   } else {
+    this.addError(error.error.errorCode, error.error.message);
+   }
+  }
+
   public addAlert(summary: string, details: string, feature: Feature) {
     this.onAlertSubject.next({summary: summary, detail: details, severity: 'success', data: feature});
   }

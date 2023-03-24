@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
-import Point from 'ol/geom/Point';
-import { LazyLoadEvent } from 'primeng/api';
-import { SatelliteInfos } from 'src/app/models/satellite-infos';
 import { SunExposureDto } from 'src/app/models/sun-exposures-dto';
+import { CustomMessagesService } from 'src/app/services/custom-messages.service';
 import { SunExpositionService } from 'src/app/services/sun-exposition.service';
-import { TimeUtils } from 'src/app/utils/time-utils';
 import { MapService } from '../../services/map.service';
 
 @Component({
@@ -26,7 +23,9 @@ export class SunExpositionComponent {
 
   private cachedSunExposure = new Map<number, SunExposureDto[]>();
 
-  constructor(private mapService: MapService, private sunExpositionService: SunExpositionService) { }
+  constructor(private mapService: MapService, 
+    private customMessageService: CustomMessagesService,
+    private sunExpositionService: SunExpositionService) { }
 
   ngOnInit() {
     this.loadNextPage();
@@ -49,11 +48,14 @@ export class SunExpositionComponent {
       this.loading = false;
     } else {
       this.sunExpositionService.getSatelliteSunExposuresPagination(this.currentPage, this.pageSize)
-        .subscribe(res => {
-          this.loading = false;
-          this.pageCount = res.pageCount;
-          this.sunExposures = res.sunExposures;
-          this.cachedSunExposure.set(this.currentPage, res.sunExposures);
+        .subscribe({
+          next: (res) => {
+            this.loading = false;
+            this.pageCount = res.pageCount;
+            this.sunExposures = res.sunExposures;
+            this.cachedSunExposure.set(this.currentPage, res.sunExposures);
+          },
+          error: error => this.customMessageService.handleError(error)
         });
     }
   }

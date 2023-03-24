@@ -18,7 +18,6 @@ export class MapComponent {
   $currentPosition!: Observable<IssCoordinates>;
 
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
-  private satelliteId = 25544;
 
   constructor(private satellitePositionService: SatellitePositionService,
     private mapService: MapService,
@@ -33,7 +32,7 @@ export class MapComponent {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: newSatelliteData => this.onPositionUpdate(newSatelliteData),
-        error: error => this.customMessageService.addError(error.error.errorCode, error.error.message)
+        error: error => this.customMessageService.handleError(error)
       });
 
     this.updateSatellitePosition();
@@ -45,7 +44,11 @@ export class MapComponent {
       switchMap(() => this.satellitePositionService.getSatelliteCurrentPosition())
     );
 
-    this.$currentPosition.subscribe(satelliteInfo => this.onPositionUpdate(satelliteInfo));
+    this.$currentPosition.subscribe({
+      next: satelliteInfo => this.onPositionUpdate(satelliteInfo),
+      error: error => this.customMessageService.handleError(error)
+    }
+    );
   }
 
   private onPositionUpdate(satelliteInfo: IssCoordinates) {
