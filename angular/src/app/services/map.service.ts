@@ -141,17 +141,13 @@ export class MapService {
     }
 
     public clearSunExposuresLayer(): void {
-      if (this._currentLineStringFeature != null) {
-        this._sunExpositionSource.removeFeature(this._currentLineStringFeature);
-      }
+      this._sunExpositionSource.removeFeature(this._currentLineStringFeature);
+      this._sunExpositionSource.clear();
     }
 
     public highlightSunExposition(sunExposure: SunExposureDto): void {
 
-      if (this._currentLineStringFeature != null) {
-        this._sunExpositionSource.removeFeature(this._currentLineStringFeature);
-        this._sunExpositionSource.clear();
-      }
+        this.clearSunExposuresLayer();
 
       const coordinates = sunExposure.satelliteInfo.map((satelliteInfo) => {
           return [satelliteInfo.longitude, satelliteInfo.latitude];
@@ -168,8 +164,8 @@ export class MapService {
           geometry: new Point(coordinates[coordinates.length -1])
         });
 
-        lastPointFeature.setStyle(OlUtils.getLineStringStartEndStyle(this.timestampToDateFormat(sunExposure.endTimestamp)));
-        firstPointFeature.setStyle(OlUtils.getLineStringStartEndStyle(this.timestampToDateFormat(sunExposure.startTimestamp)));
+        firstPointFeature.setStyle(OlUtils.getLineStringStartEndStyle(`Start: ${this.timestampToDateFormat(sunExposure.startTimestamp)}`));
+        lastPointFeature.setStyle(OlUtils.getLineStringStartEndStyle(`End: ${this.timestampToDateFormat(sunExposure.endTimestamp)}`));
 
         this._sunExpositionSource.addFeature(lineStringFeature);
         this._sunExpositionSource.addFeature(firstPointFeature);
@@ -228,7 +224,12 @@ export class MapService {
     }
 
     private timestampToDateFormat(timestamp: number) {
-      const date = new Date(timestamp * 1000);
-      return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
+      if (timestamp) {
+        const date = new Date(timestamp * 1000);
+        return `${date.getDate()}/${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+      } else {
+        return 'On going';
+      }
+      
     }
 }

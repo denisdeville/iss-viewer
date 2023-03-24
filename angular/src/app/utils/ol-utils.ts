@@ -29,7 +29,7 @@ export class OlUtils {
     public static getLineStringStartEndStyle(textToDisplay: string): Style {
         return new Style({
             image: new Circle({
-                radius: 7,
+                radius: 5,
                 fill: new Fill({
                     color: 'blue',
                 }),
@@ -44,7 +44,7 @@ export class OlUtils {
             }),
             text: new Text({
                 text: textToDisplay,
-                font: 'bold 20px Calibri,sans-serif',
+                font: 'bold 15px Calibri,sans-serif',
                 fill: new Fill({
                     color: 'black',
                 }),

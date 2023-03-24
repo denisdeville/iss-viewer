@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { SunExposureDto } from '../models/sun-exposures-dto';
 
 @Injectable({
@@ -8,7 +9,7 @@ import { SunExposureDto } from '../models/sun-exposures-dto';
 })
 export class SunExpositionService {
 
-  private baseUrl = 'http://localhost:8080/iss/sun'
+  private baseUrl = `${environment.apiUrl}/iss/sun`;
 
   constructor(private httpClient: HttpClient) { }
 

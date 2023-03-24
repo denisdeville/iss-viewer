@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { IssCoordinates } from '../models/iss-coordinates';
 
 @Injectable({
@@ -8,7 +9,7 @@ import { IssCoordinates } from '../models/iss-coordinates';
 })
 export class SatellitePositionService {
 
-  private baseUrl = 'http://localhost:8080/iss/position'
+  private baseUrl = `${environment.apiUrl}/iss/position`;
 
   constructor(private httpClient: HttpClient) { }
 
