@@ -16,9 +16,18 @@ import io.quarkus.panache.common.Page;
 @ApplicationScoped
 public class SunExposuresRepository {
 
+    public void save(SunExposuresEntity entity) {
+        entity.persist();
+    }
+
+    public void deleteAll() {
+        SunExposuresEntity.deleteAll();
+    }
+
     public List<SunExposuresEntity> findAll() {
         return SunExposuresEntity.listAll();
     }
+    
     
     public List<SunExposuresEntity> findAllWithPagination(int pageNumber, int pageSize) {
         PanacheQuery<SunExposuresEntity> sunExposuresQuery = SatelliteInfoHistoryEntity.find("select sunExposures from sun_exposures sunExposures ORDER BY start_timestamp DESC");

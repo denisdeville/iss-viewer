@@ -25,16 +25,16 @@ import org.acme.repositories.SunExposuresRepository;
 public class SatelliteService {
 
     @Inject
-    SunExposuresMapper sunExposuresMapper;
+    private SunExposuresMapper sunExposuresMapper;
 
     @Inject
-    SatelliteInfoHistoryMapper satelliteInfoHistoryMapper;
+    private SatelliteInfoHistoryMapper satelliteInfoHistoryMapper;
 
     @Inject
-    SunExposuresRepository sunExposuresRepository;
+    private SunExposuresRepository sunExposuresRepository;
 
     @Inject
-    SatelliteInfoHistoryRepository satelliteInfoHistoryRepository;
+    private SatelliteInfoHistoryRepository satelliteInfoHistoryRepository;
 
     public IssCoordinates GetSatelliteCurrentPosition() throws CustomException {
         IssCoordinates currentSatteliteCoordinates = TLEService.getInstance()

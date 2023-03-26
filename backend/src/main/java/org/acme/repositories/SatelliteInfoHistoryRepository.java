@@ -12,6 +12,15 @@ import org.acme.entities.SatelliteInfoHistoryEntity;
  */
 @ApplicationScoped
 public class SatelliteInfoHistoryRepository {
+    
+    public void save(SatelliteInfoHistoryEntity entity) {
+        entity.persist();
+    }
+
+    public void deleteAll() {
+        SatelliteInfoHistoryEntity.deleteAll();
+    }
+    
     public List<SatelliteInfoHistoryEntity> getSatelliteInfoHistoryBetween(BigInteger startTimestamp,
             BigInteger endTimestamp) {
 
