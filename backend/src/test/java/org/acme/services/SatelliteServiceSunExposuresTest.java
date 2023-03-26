@@ -2,22 +2,20 @@ package org.acme.services;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.acme.dto.SunExposuresDTO;
+import org.acme.dto.SunExposuresPaginationDTO;
 import org.acme.entities.SatelliteInfoHistoryEntity;
 import org.acme.entities.SunExposuresEntity;
 import org.acme.exceptions.CustomException;
 import org.acme.repositories.SatelliteInfoHistoryRepository;
 import org.acme.repositories.SunExposuresRepository;
 import org.acme.services.wheretheissat.WhereTheIssAtService;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -123,7 +121,10 @@ public class SatelliteServiceSunExposuresTest {
         try {
             List<SunExposuresDTO> sunExposures = satelliteService.GetSatelliteSunExposures();
 
-            Assertions.assertEquals(sunExposures.size(), 3);
+            int expectedSunExposuresListSize = 3;
+            int actualSunExposuresListSize = sunExposures.size();
+
+            Assertions.assertEquals(expectedSunExposuresListSize, actualSunExposuresListSize);
         } catch (CustomException e) {
             // TODO Auto-generated catch block
             Log.error(e);
@@ -148,9 +149,96 @@ public class SatelliteServiceSunExposuresTest {
             SunExposuresDTO sunExposuresStartingAt11000 = sunExposures.stream()
                     .filter(s -> s.getStartTimestamp().equals(BigInteger.valueOf(11000))).findFirst().orElse(null);
 
-            Assertions.assertEquals(sunExposuresStartingAt2000.getSatelliteInfo().size(), 3);
-            Assertions.assertEquals(sunExposuresStartingAt7000.getSatelliteInfo().size(), 1);
-            Assertions.assertEquals(sunExposuresStartingAt11000.getSatelliteInfo().size(), 0);
+
+            int actualSatelliteInfoInSunExposureStartingAt2000 = sunExposuresStartingAt2000.getSatelliteInfo().size();
+            int expectedSatelliteInfoInSunExposureStartingAt2000 = 3;
+
+            int actualSatelliteInfoInSunExposureStartingAt7000 = sunExposuresStartingAt7000.getSatelliteInfo().size();
+            int expectedSatelliteInfoInSunExposureStartingAt7000 = 1;
+
+
+            int actualSatelliteInfoInSunExposureStartingAt11000 = sunExposuresStartingAt11000.getSatelliteInfo().size();
+            int expectedSatelliteInfoInSunExposureStartingAt11000 = 0;
+
+
+                    
+            Assertions.assertEquals(actualSatelliteInfoInSunExposureStartingAt2000, expectedSatelliteInfoInSunExposureStartingAt2000);
+            Assertions.assertEquals(actualSatelliteInfoInSunExposureStartingAt7000, expectedSatelliteInfoInSunExposureStartingAt7000);
+            Assertions.assertEquals(actualSatelliteInfoInSunExposureStartingAt11000, expectedSatelliteInfoInSunExposureStartingAt11000);
+        } catch (CustomException e) {
+            // TODO Auto-generated catch block
+            Log.error(e);
+        }
+    }
+
+    @Test
+    void GetSatelliteSunExposuresPaginationReturnsPages() {
+        try {
+
+            // Variables 
+            // Represent the current page number requestd
+            int pageNumber = 0;
+            // Represent the size of the page request
+            int requestPageSize = 2;
+            // Represented the total amount of element present in database (inserted in setup() method)
+            int totalNumberOfElement = 3;
+
+
+
+            // First page with size of 2 should return 2 elements
+            SunExposuresPaginationDTO sunExposures = satelliteService.GetSatelliteSunExposuresPagination(0, requestPageSize);
+
+            int expectedPageSize = requestPageSize;
+            int actualNumberOfElementInTheList = sunExposures.getSunExposures().size();
+
+            int expectedPageCount = 2;
+            int actualPageCount = sunExposures.getPageCount();
+
+            Assertions.assertEquals(expectedPageSize, actualNumberOfElementInTheList);
+            Assertions.assertEquals(expectedPageCount, actualPageCount);
+
+
+
+
+            // Next page should only return 1 element
+            pageNumber = 1;
+            sunExposures = satelliteService.GetSatelliteSunExposuresPagination(pageNumber, requestPageSize);
+
+            expectedPageSize = (totalNumberOfElement - (requestPageSize * pageNumber));
+            actualNumberOfElementInTheList = sunExposures.getSunExposures().size();
+
+            Assertions.assertEquals(expectedPageSize, actualNumberOfElementInTheList);
+
+
+
+
+            // An empty page should ne produce any errors
+            // Page number 10 does not exist as we request page of 2 elements and we only have 3 elements in DB
+            pageNumber = 10;
+            sunExposures = satelliteService.GetSatelliteSunExposuresPagination(pageNumber, requestPageSize);
+
+            expectedPageSize = 0;
+            actualNumberOfElementInTheList = sunExposures.getSunExposures().size();
+
+            Assertions.assertEquals(expectedPageSize, actualNumberOfElementInTheList);
+
+
+
+
+            // A page requesting more elements that exist in DB should not produce any errors
+            pageNumber = 0;
+            requestPageSize = 100;
+            sunExposures = satelliteService.GetSatelliteSunExposuresPagination(pageNumber, requestPageSize);
+
+            expectedPageSize = 3;
+            actualNumberOfElementInTheList = sunExposures.getSunExposures().size();
+
+            expectedPageCount = 1;
+            actualPageCount = sunExposures.getPageCount();
+
+            Assertions.assertEquals(expectedPageSize, actualNumberOfElementInTheList);
+            Assertions.assertEquals(expectedPageCount, actualPageCount);
+
         } catch (CustomException e) {
             // TODO Auto-generated catch block
             Log.error(e);
