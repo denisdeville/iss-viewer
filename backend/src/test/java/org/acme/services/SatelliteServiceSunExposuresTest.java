@@ -126,7 +126,6 @@ public class SatelliteServiceSunExposuresTest {
 
             Assertions.assertEquals(expectedSunExposuresListSize, actualSunExposuresListSize);
         } catch (CustomException e) {
-            // TODO Auto-generated catch block
             Log.error(e);
         }
     }
@@ -153,6 +152,7 @@ public class SatelliteServiceSunExposuresTest {
             int actualSatelliteInfoInSunExposureStartingAt2000 = sunExposuresStartingAt2000.getSatelliteInfo().size();
             int expectedSatelliteInfoInSunExposureStartingAt2000 = 3;
 
+            
             int actualSatelliteInfoInSunExposureStartingAt7000 = sunExposuresStartingAt7000.getSatelliteInfo().size();
             int expectedSatelliteInfoInSunExposureStartingAt7000 = 1;
 
@@ -207,7 +207,11 @@ public class SatelliteServiceSunExposuresTest {
             expectedPageSize = (totalNumberOfElement - (requestPageSize * pageNumber));
             actualNumberOfElementInTheList = sunExposures.getSunExposures().size();
 
+            expectedPageCount = 2;
+            actualPageCount = sunExposures.getPageCount();
+
             Assertions.assertEquals(expectedPageSize, actualNumberOfElementInTheList);
+            Assertions.assertEquals(expectedPageCount, actualPageCount);
 
 
 
