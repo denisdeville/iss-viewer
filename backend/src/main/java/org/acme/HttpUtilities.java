@@ -8,7 +8,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 
 import org.acme.exceptions.CustomException;
-import org.acme.models.dto.IssException;
+import org.acme.models.wheretheissat.WhereTheIssAtException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,9 +38,9 @@ public class HttpUtilities {
                 throw new CustomException(ex.getMessage(), 500);
             }
         } else {
-            IssException exception;
+            WhereTheIssAtException exception;
             try {
-                exception = new ObjectMapper().readValue(bodyAsString, IssException.class);
+                exception = new ObjectMapper().readValue(bodyAsString, WhereTheIssAtException.class);
             } catch(Exception ex) {
                 throw new CustomException(ex.getMessage(), 500);
             }
@@ -58,9 +58,9 @@ public class HttpUtilities {
                 throw new CustomException(ex.getMessage(), 500);
             }
         } else {
-            IssException exception;
+            WhereTheIssAtException exception;
             try {
-                exception = new ObjectMapper().readValue(bodyAsString, IssException.class);
+                exception = new ObjectMapper().readValue(bodyAsString, WhereTheIssAtException.class);
             } catch(Exception ex) {
                 throw new CustomException(ex.getMessage(), 500);
             }

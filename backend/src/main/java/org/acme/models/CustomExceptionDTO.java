@@ -1,4 +1,4 @@
-package org.acme.models.dto;
+package org.acme.models;
 
 import org.acme.exceptions.CustomException;
 

@@ -1,4 +1,4 @@
-package org.acme.models.dto;
+package org.acme.dto;
 
 public class IssCoordinates {
     private double latitude;

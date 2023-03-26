@@ -2,7 +2,7 @@ package org.acme.services;
 
 import java.io.File;
 
-import org.acme.models.dto.IssCoordinates;
+import org.acme.dto.IssCoordinates;
 import org.hipparchus.util.FastMath;
 import org.orekit.bodies.BodyShape;
 import org.orekit.bodies.GeodeticPoint;

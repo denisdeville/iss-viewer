@@ -17,6 +17,8 @@ export class SunExpositionComponent {
 
   currentPage = 0;
 
+  totalPage = 0;
+
   pageSize = 10;
 
   pageCount = 0;

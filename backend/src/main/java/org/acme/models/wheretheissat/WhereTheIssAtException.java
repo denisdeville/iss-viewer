@@ -1,10 +1,10 @@
-package org.acme.models.dto;
+package org.acme.models.wheretheissat;
 
-public class IssException {
+public class WhereTheIssAtException {
     private String error;
     private int statusCode;
 
-    public IssException(){}
+    public WhereTheIssAtException(){}
 
     public String getError() {
         return error;
