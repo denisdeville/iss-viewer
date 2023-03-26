@@ -28,12 +28,14 @@ public class ScheduleService {
     @Inject
     WhereTheIssAtService whereTheIssAtService;
 
-    @Scheduled(every = "20s")
+    @Scheduled(every = "10m")
     public void updateTleData() {
         try {
-            WhereTheIssAtTleData tleData = this.whereTheIssAtService.GetTleDataById(25544);
+            WhereTheIssAtTleData tleData = this.whereTheIssAtService.GetIssTleData();
             TLEService.getInstance().updateTleData(tleData.getLine1(),
                     tleData.getLine2());
+            Log.info("Updated TLE Data, new data:");
+            Log.info(tleData.toString());        
         } catch (Exception ex) {
             Log.error("Could not refresh TLE data, cause: " + ex.getMessage());
         }
@@ -59,7 +61,7 @@ public class ScheduleService {
 
         try {
             List<WhereTheIssAtSatelliteInfo> last10Positions = whereTheIssAtService
-                    .GetSatellitePositionByIdAndTimestamps(25544, timestampStringList);
+                    .GetIssPositionsByTimestamps(timestampStringList);
 
             Collections.sort(last10Positions);
 

@@ -8,3 +8,4 @@
 /.vscode/launch.json
 /.vscode/tasks.json
 /backend/.env
+/backend/.prodenv
