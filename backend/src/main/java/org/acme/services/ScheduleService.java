@@ -19,7 +19,6 @@ import org.acme.models.wheretheissat.WhereTheIssAtTleData;
 import org.acme.services.wheretheissat.WhereTheIssAtService;
 
 import io.quarkus.logging.Log;
-import io.quarkus.panache.common.Parameters;
 import io.quarkus.scheduler.Scheduled;
 
 @ApplicationScoped
@@ -27,6 +26,9 @@ public class ScheduleService {
 
     @Inject
     WhereTheIssAtService whereTheIssAtService;
+
+    @Inject
+    SatelliteService satelliteService;
 
     @Scheduled(every = "10m")
     public void updateTleData() {
@@ -77,7 +79,7 @@ public class ScheduleService {
                             null,
                             info.getLatitude(),
                             info.getLongitude());
-                    newSunExposure.persist();
+                    this.satelliteService.addNewSunExposure(newSunExposure);
                     Log.info("Created new sun exposure, starting at" + newSunExposure.getStartTimestamp());
                     lastVisilibityInserted = daylight;
                     lastSunExposuresInstance = newSunExposure;
@@ -85,14 +87,12 @@ public class ScheduleService {
 
                 if (lastVisilibityInserted.equals(daylight) && !info.getVisibility().equals(daylight)) {
                     if (lastSunExposuresInstance == null) {
-                        lastSunExposuresInstance = SunExposuresEntity
-                                .find("select sunExp from sun_exposures sunExp where sunExp.endTimestamp is null")
-                                .firstResult();
+                        lastSunExposuresInstance = this.satelliteService.getNotFinishedSunExposuresEntity();
                     }
 
                     if (lastSunExposuresInstance != null) {
                         lastSunExposuresInstance.setEndTimestamp(info.getTimestamp());
-                        SunExposuresEntity.update("UPDATE FROM sun_exposures SET endTimestamp = :endTimestamp where startTimestamp = :startTimestamp", Parameters.with("endTimestamp",lastSunExposuresInstance.getEndTimestamp()).and("startTimestamp",lastSunExposuresInstance.getStartTimestamp()));
+                        this.satelliteService.updateSunExposureSetEndTimestamp(lastSunExposuresInstance.getStartTimestamp(), lastSunExposuresInstance.getEndTimestamp());
                         Log.info("Closed sun exposure started at" + lastSunExposuresInstance.getStartTimestamp()
                                 + ", ended at " + lastSunExposuresInstance.getEndTimestamp());
                         lastSunExposuresInstance = null;
@@ -110,7 +110,7 @@ public class ScheduleService {
             last10Positions.removeIf(p -> !p.getVisibility().equals(daylight));
 
             if (!last10Positions.isEmpty()) {
-                SatelliteInfoHistoryEntity.persist(last10PositionsHistory);
+                this.satelliteService.saveAllSatelliteInfoHistory(last10PositionsHistory);
 
                 Log.info("Inserted new SatelliteInfoHistory for " + last10TimeStamps.toString());
             } else {

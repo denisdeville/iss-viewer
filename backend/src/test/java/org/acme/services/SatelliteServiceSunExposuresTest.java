@@ -119,7 +119,7 @@ public class SatelliteServiceSunExposuresTest {
     @Test
     void GetSatelliteSunExposuresReturnsAllTheSunExposures() {
         try {
-            List<SunExposuresDTO> sunExposures = satelliteService.GetSatelliteSunExposures();
+            List<SunExposuresDTO> sunExposures = satelliteService.getSatelliteSunExposures();
 
             int expectedSunExposuresListSize = 3;
             int actualSunExposuresListSize = sunExposures.size();
@@ -133,7 +133,7 @@ public class SatelliteServiceSunExposuresTest {
     @Test
     void GetSatelliteSunExposuresReturnsSunExposureWithSatelliteInfoHistoryCorrectlySet() {
         try {
-            List<SunExposuresDTO> sunExposures = satelliteService.GetSatelliteSunExposures();
+            List<SunExposuresDTO> sunExposures = satelliteService.getSatelliteSunExposures();
 
             for (SunExposuresDTO sun : sunExposures) {
                 Log.info(sun.getStartTimestamp());
@@ -186,7 +186,7 @@ public class SatelliteServiceSunExposuresTest {
 
 
             // First page with size of 2 should return 2 elements
-            SunExposuresPaginationDTO sunExposures = satelliteService.GetSatelliteSunExposuresPagination(0, requestPageSize);
+            SunExposuresPaginationDTO sunExposures = satelliteService.getSatelliteSunExposuresPagination(0, requestPageSize);
 
             int expectedPageSize = requestPageSize;
             int actualNumberOfElementInTheList = sunExposures.getSunExposures().size();
@@ -202,7 +202,7 @@ public class SatelliteServiceSunExposuresTest {
 
             // Next page should only return 1 element
             pageNumber = 1;
-            sunExposures = satelliteService.GetSatelliteSunExposuresPagination(pageNumber, requestPageSize);
+            sunExposures = satelliteService.getSatelliteSunExposuresPagination(pageNumber, requestPageSize);
 
             expectedPageSize = (totalNumberOfElement - (requestPageSize * pageNumber));
             actualNumberOfElementInTheList = sunExposures.getSunExposures().size();
@@ -219,7 +219,7 @@ public class SatelliteServiceSunExposuresTest {
             // An empty page should ne produce any errors
             // Page number 10 does not exist as we request page of 2 elements and we only have 3 elements in DB
             pageNumber = 10;
-            sunExposures = satelliteService.GetSatelliteSunExposuresPagination(pageNumber, requestPageSize);
+            sunExposures = satelliteService.getSatelliteSunExposuresPagination(pageNumber, requestPageSize);
 
             expectedPageSize = 0;
             actualNumberOfElementInTheList = sunExposures.getSunExposures().size();
@@ -232,7 +232,7 @@ public class SatelliteServiceSunExposuresTest {
             // A page requesting more elements that exist in DB should not produce any errors
             pageNumber = 0;
             requestPageSize = 100;
-            sunExposures = satelliteService.GetSatelliteSunExposuresPagination(pageNumber, requestPageSize);
+            sunExposures = satelliteService.getSatelliteSunExposuresPagination(pageNumber, requestPageSize);
 
             expectedPageSize = 3;
             actualNumberOfElementInTheList = sunExposures.getSunExposures().size();

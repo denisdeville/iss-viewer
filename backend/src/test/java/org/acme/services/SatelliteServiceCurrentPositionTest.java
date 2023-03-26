@@ -45,7 +45,7 @@ public class SatelliteServiceCurrentPositionTest {
     @Test
     void testGetSatelliteCurrentPositionReturnsTheCurrentPositionOfTheIss() {
         try {
-           IssCoordinates actualCoordinates = satelliteService.GetSatelliteCurrentPosition();
+           IssCoordinates actualCoordinates = satelliteService.getSatelliteCurrentPosition();
 
            WhereTheIssAtSatelliteInfo whereTheIssSatelliteInfo = whereTheIssAtService.GetIssCurrentPosition();
 

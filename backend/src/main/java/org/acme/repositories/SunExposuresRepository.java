@@ -1,5 +1,6 @@
 package org.acme.repositories;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -9,6 +10,7 @@ import org.acme.entities.SunExposuresEntity;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
+import io.quarkus.panache.common.Parameters;
 
 /**
  * The SunExposuresRepository class represents the data access layer for the SunExposuresEntity entity
@@ -18,6 +20,15 @@ public class SunExposuresRepository {
 
     public void save(SunExposuresEntity entity) {
         entity.persist();
+    }
+
+    public SunExposuresEntity getNotFinishedExposureEntity() {
+        return SunExposuresEntity.find("select sunExp from sun_exposures sunExp where sunExp.endTimestamp is null")
+                .firstResult();
+    } 
+    
+    public void updateSunExposureSetEndTimestamp(BigInteger whereStartTimestamp, BigInteger newEndTimestamp) {
+        SunExposuresEntity.update("UPDATE FROM sun_exposures SET endTimestamp = :endTimestamp where startTimestamp = :startTimestamp", Parameters.with("endTimestamp",newEndTimestamp).and("startTimestamp",whereStartTimestamp));
     }
 
     public void deleteAll() {

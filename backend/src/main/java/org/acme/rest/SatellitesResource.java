@@ -36,7 +36,7 @@ public class SatellitesResource {
     @Path("/position")
     public Response GetSatelliteCurrentPosition() {
         try {
-            IssCoordinates coordinates = satelliteService.GetSatelliteCurrentPosition();
+            IssCoordinates coordinates = satelliteService.getSatelliteCurrentPosition();
             return Response.ok().entity(coordinates).build();
         } catch(CustomException exception) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -56,7 +56,7 @@ public class SatellitesResource {
     @Path("/sun")
     public Response GetSatelliteSunExposures() throws CustomException {
         try {
-            List<SunExposuresDTO> model = satelliteService.GetSatelliteSunExposures();
+            List<SunExposuresDTO> model = satelliteService.getSatelliteSunExposures();
             return Response.ok().entity(model).build();
         } catch(CustomException exception) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -75,7 +75,7 @@ public class SatellitesResource {
     @Path("/sun/pagination")
     public Response GetSatelliteSunExposuresPagination(@QueryParam("pageNumber") int pageNumber, @QueryParam("pageSize") int pageSize) throws CustomException {
         try {
-            SunExposuresPaginationDTO model = satelliteService.GetSatelliteSunExposuresPagination(pageNumber, pageSize);
+            SunExposuresPaginationDTO model = satelliteService.getSatelliteSunExposuresPagination(pageNumber, pageSize);
             return Response.ok().entity(model).build();
         } catch(CustomException exception) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

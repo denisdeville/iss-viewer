@@ -17,6 +17,10 @@ public class SatelliteInfoHistoryRepository {
         entity.persist();
     }
 
+    public void saveAll(List<SatelliteInfoHistoryEntity> entities) {
+        SatelliteInfoHistoryEntity.persist(entities);
+    }
+
     public void deleteAll() {
         SatelliteInfoHistoryEntity.deleteAll();
     }
