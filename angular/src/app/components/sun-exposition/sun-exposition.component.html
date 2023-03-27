@@ -17,7 +17,7 @@
                 <p-tableRadioButton [value]="expo"></p-tableRadioButton>
             </td>
             <td>{{expo.startTimestamp * 1000 | date: 'dd/MM/YYYY H:mm' }}</td>
-            <td>{{expo.endTimestamp != null ? (expo.endTimestamp * 1000 | date: 'dd/MM/YYYY H:mm') : 'On going' }}</td>
+            <td>{{expo.endTimestamp != null ? (expo.endTimestamp * 1000 | date: 'dd/MM/YYYY H:mm') : 'Ongoing' }}</td>
         </tr>
     </ng-template>
 </p-table>
